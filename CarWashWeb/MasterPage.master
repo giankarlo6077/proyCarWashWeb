@@ -1,0 +1,171 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="MasterPage.master.vb" Inherits="CarWashWeb.MasterPage" %>
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Sistema Car Wash Web</title>
+    
+    <style>
+        /* Tipografía y fondo general */
+        body {
+            font-family: Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F3F4F6; 
+        }
+        
+        /* 1. Barra de Navegación */
+        .navbar {
+            background-color: #1F2937; 
+            color: white;
+            padding: 10px 30px; /* Reduje un poco el padding superior/inferior si usamos logo */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        /* Contenedor para alinear el logo y el título */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Separación entre el logo y el texto */
+        }
+
+        .logo-container img {
+            height: 40px; /* Tamaño ideal para un logo en la barra */
+            width: auto;
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-size: 16pt;
+        }
+
+        /* 2. Menú y Separación */
+        .menu-enlaces {
+            display: flex;
+            align-items: center;
+        }
+
+        /* 3. Magia del Menú Desplegable (Dropdown) */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 45px; /* Aumenté la separación entre los menús a 45px */
+        }
+
+        .dropbtn {
+            color: white;
+            text-decoration: none;
+            font-size: 10pt;
+            font-weight: bold;
+            padding: 15px 0;
+            cursor: pointer;
+            display: block;
+        }
+
+        /* La caja que aparece al pasar el mouse */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+            top: 100%; /* Justo debajo del texto */
+            left: 0; 
+            overflow: hidden; /* Para que los bordes redondeados no se rompan */
+        }
+
+        /* Los enlaces dentro del menú desplegable */
+        .dropdown-content a {
+            color: #1F2937; /* Azul oscuro para que contraste en fondo blanco */
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 9pt;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        /* Efectos al pasar el mouse (Hover) */
+        .dropdown-content a:hover {
+            background-color: #F3F4F6;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block; /* Muestra la caja */
+        }
+
+        .dropdown:hover .dropbtn {
+            color: #9CA3AF; /* Pone el título principal gris */
+        }
+
+        /* 4. Contenedor central de los formularios */
+        .contenedor-principal {
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 1200px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-height: 500px; /* Para que la página no se vea corta si no hay contenido */
+        }
+    </style>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        
+        <div class="navbar">
+            <div class="logo-container">
+                <img src="ruta-de-tu-logo.png" alt="Logo Car Wash" onerror="this.style.display='none'" />
+                <h2>Sistema Car Wash</h2>
+            </div>
+
+            <div class="menu-enlaces">
+                
+                <div class="dropdown">
+                    <a href="Inicio.aspx" class="dropbtn">Inicio</a>
+                </div>
+
+                <div class="dropdown">
+                    <span class="dropbtn">Mantenimiento ▾</span>
+                    <div class="dropdown-content">
+                        <a href="FrmUsuarios.aspx">Usuarios</a>
+                        <a href="FrmVehiculos.aspx">Vehículos</a>
+                        <a href="FrmServicios.aspx">Servicios</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <span class="dropbtn">Citas ▾</span>
+                    <div class="dropdown-content">
+                        <a href="FrmNuevaCita.aspx">Nueva Cita</a>
+                        <a href="FrmHistorialCitas.aspx">Historial</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <span class="dropbtn">Personal ▾</span>
+                    <div class="dropdown-content">
+                        <a href="FrmClientes.aspx">Clientes</a>
+                        <a href="FrmTrabajadores.aspx">Trabajadores</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="contenedor-principal">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+
+    </form>
+</body>
+</html>
