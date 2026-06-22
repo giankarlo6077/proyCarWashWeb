@@ -15,7 +15,6 @@ Partial Class jdGestionarProducto
         End If
 
         If Not Page.IsPostBack Then
-            btnNuevo.Text = "➕ Nuevo"
             listarcbo()
             listar("")
         End If
@@ -51,7 +50,7 @@ Partial Class jdGestionarProducto
         End Try
     End Sub
 
-    Private Sub limpiar()
+    Private Sub limpiarForm()
         txtId.Text = ""
         txtNombre.Text = ""
         txtStock.Text = "0"
@@ -67,140 +66,104 @@ Partial Class jdGestionarProducto
         If item IsNot Nothing Then item.Selected = True
     End Sub
 
-    '====================== BOTONERA ======================
-    Protected Sub btnBuscar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscar.Click
-        If txtId.Text.Trim() = "" Then
-            MostrarError("Ingrese un ID para buscar")
-            Exit Sub
-        End If
+    '====================== ABRIR MODAL: REGISTRAR NUEVO ======================
+    Protected Sub btnRegistrarNuevo_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnRegistrarNuevo.Click
         Try
-            Dim fila As DataRow = objProducto.buscarXid(Convert.ToInt32(txtId.Text))
-            If fila IsNot Nothing Then
-                txtNombre.Text = Convert.ToString(fila("producto"))
-                txtStock.Text = Convert.ToString(fila("stock"))
-                chkVigencia.Checked = Convert.ToBoolean(fila("vigencia"))
-                txtPrecio.Text = Convert.ToString(fila("precioactual"))
-                SeleccionarPorTexto(cboMarcaProducto, Convert.ToString(fila("marcaproducto")))
-                SeleccionarPorTexto(cboTipoProducto, Convert.ToString(fila("tipoproducto")))
-                lblMensaje.Text = ""
-            Else
-                MostrarError("No se encontró el producto con ese ID")
-            End If
+            hdnModo.Value = "nuevo"
+            limpiarForm()
+            txtId.Text = objProducto.generarCodigoProducto().ToString()
+            lblFormTitulo.Text = "Registrar Producto"
+            pnlForm.Visible = True
+            lblMensaje.Text = ""
         Catch ex As Exception
-            MostrarError("Error al buscar: " & ex.Message)
+            MostrarError("Error al preparar el registro: " & ex.Message)
         End Try
     End Sub
 
-    Protected Sub btnNuevo_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnNuevo.Click
-        If btnNuevo.Text.Contains("Nuevo") Then
-            btnNuevo.Text = "💾 Guardar"
-            limpiar()
-            Try
-                txtId.Text = objProducto.generarCodigoProducto().ToString()
-                MostrarExito("Complete los datos del producto y presione Guardar.")
-            Catch ex As Exception
-                MostrarError("Error al generar el código del producto: " & ex.Message)
-            End Try
-        Else
-            ' Validaciones
-            If txtNombre.Text.Trim() = "" Then
-                MostrarError("Ingrese el nombre del producto")
-                Exit Sub
-            End If
-            If cboTipoProducto.SelectedIndex <= 0 Then
-                MostrarError("Seleccione el tipo de producto")
-                Exit Sub
-            End If
-            If cboMarcaProducto.SelectedIndex <= 0 Then
-                MostrarError("Seleccione la marca del producto")
-                Exit Sub
-            End If
-            Dim precio As Decimal
-            If Not Decimal.TryParse(txtPrecio.Text, precio) Then
-                MostrarError("Ingrese un precio válido")
-                Exit Sub
-            End If
+    '====================== ACCIONES POR FILA (Editar / Dar de baja) ======================
+    Protected Sub dgvProductos_RowCommand(ByVal sender As Object, ByVal e As GridViewCommandEventArgs)
+        Dim id As Integer
+        If Not Integer.TryParse(Convert.ToString(e.CommandArgument), id) Then Exit Sub
 
-            btnNuevo.Text = "➕ Nuevo"
-            Try
-                Dim id As Integer = objProducto.generarCodigoProducto()
-                Dim idMarca As Integer = Convert.ToInt32(cboMarcaProducto.SelectedValue)
-                Dim idTipo As Integer = Convert.ToInt32(cboTipoProducto.SelectedValue)
-                objProducto.registrarProducto(id, txtNombre.Text.Trim(), Convert.ToInt32(txtStock.Text), chkVigencia.Checked, precio, idTipo, idMarca)
-                MostrarExito("PRODUCTO REGISTRADO")
-                limpiar()
-            Catch ex As Exception
-                MostrarError("Error al registrar: " & ex.Message)
-            End Try
-            listar("")
-        End If
+        Select Case e.CommandName
+            Case "Editar"
+                Try
+                    Dim fila As DataRow = objProducto.buscarXid(id)
+                    If fila IsNot Nothing Then
+                        hdnModo.Value = "editar"
+                        txtId.Text = id.ToString()
+                        txtNombre.Text = Convert.ToString(fila("producto"))
+                        txtStock.Text = Convert.ToString(fila("stock"))
+                        chkVigencia.Checked = Convert.ToBoolean(fila("vigencia"))
+                        txtPrecio.Text = Convert.ToString(fila("precioactual"))
+                        SeleccionarPorTexto(cboMarcaProducto, Convert.ToString(fila("marcaproducto")))
+                        SeleccionarPorTexto(cboTipoProducto, Convert.ToString(fila("tipoproducto")))
+                        lblFormTitulo.Text = "Modificar Producto"
+                        pnlForm.Visible = True
+                        lblMensaje.Text = ""
+                    End If
+                Catch ex As Exception
+                    MostrarError("Error al cargar el producto: " & ex.Message)
+                End Try
+
+            Case "Baja"
+                Try
+                    objProducto.darbajaProducto(id)
+                    MostrarExito("PRODUCTO DADO DE BAJA")
+                    listar("")
+                Catch ex As Exception
+                    MostrarError("Error al dar de baja: " & ex.Message)
+                End Try
+        End Select
     End Sub
 
-    Protected Sub btnModificar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnModificar.Click
-        If txtId.Text.Trim() = "" Then
-            MostrarError("Seleccione un producto para modificar")
+    '====================== GUARDAR (Registrar o Modificar) ======================
+    Protected Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+        ' Validaciones
+        If txtNombre.Text.Trim() = "" Then
+            MostrarErrorModal("Ingrese el nombre del producto")
             Exit Sub
         End If
-        If cboTipoProducto.SelectedIndex <= 0 OrElse cboMarcaProducto.SelectedIndex <= 0 Then
-            MostrarError("Seleccione el tipo y la marca del producto")
+        If cboTipoProducto.SelectedIndex <= 0 Then
+            MostrarErrorModal("Seleccione el tipo de producto")
+            Exit Sub
+        End If
+        If cboMarcaProducto.SelectedIndex <= 0 Then
+            MostrarErrorModal("Seleccione la marca del producto")
             Exit Sub
         End If
         Dim precio As Decimal
         If Not Decimal.TryParse(txtPrecio.Text, precio) Then
-            MostrarError("Ingrese un precio válido")
+            MostrarErrorModal("Ingrese un precio válido")
             Exit Sub
         End If
+
         Try
             Dim idMarca As Integer = Convert.ToInt32(cboMarcaProducto.SelectedValue)
             Dim idTipo As Integer = Convert.ToInt32(cboTipoProducto.SelectedValue)
-            objProducto.modificarProducto(Convert.ToInt32(txtId.Text), txtNombre.Text.Trim(), Convert.ToInt32(txtStock.Text), chkVigencia.Checked, precio, idTipo, idMarca)
-            MostrarExito("PRODUCTO MODIFICADO")
+            Dim stock As Integer = Convert.ToInt32(txtStock.Text)
+
+            If hdnModo.Value = "nuevo" Then
+                Dim id As Integer = objProducto.generarCodigoProducto()
+                objProducto.registrarProducto(id, txtNombre.Text.Trim(), stock, chkVigencia.Checked, precio, idTipo, idMarca)
+                MostrarExito("PRODUCTO REGISTRADO")
+            Else
+                objProducto.modificarProducto(Convert.ToInt32(txtId.Text), txtNombre.Text.Trim(), stock, chkVigencia.Checked, precio, idTipo, idMarca)
+                MostrarExito("PRODUCTO MODIFICADO")
+            End If
+
+            pnlForm.Visible = False
+            limpiarForm()
+            listar("")
         Catch ex As Exception
-            MostrarError("Error al modificar: " & ex.Message)
+            MostrarErrorModal("Error al guardar: " & ex.Message)
         End Try
-        listar("")
     End Sub
 
-    Protected Sub btnLimpiar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnLimpiar.Click
-        limpiar()
+    Protected Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
+        pnlForm.Visible = False
+        limpiarForm()
         lblMensaje.Text = ""
-    End Sub
-
-    Protected Sub btnDarsebaja_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnDarsebaja.Click
-        If txtId.Text.Trim() = "" Then
-            MostrarError("Escoja un producto para dar de baja")
-            Exit Sub
-        End If
-        Try
-            objProducto.darbajaProducto(Convert.ToInt32(txtId.Text))
-            MostrarExito("PRODUCTO DADO DE BAJA")
-            limpiar()
-        Catch ex As Exception
-            MostrarError("Error al dar de baja: " & ex.Message)
-        End Try
-        listar("")
-    End Sub
-
-    '====================== SELECCIONAR FILA ======================
-    Protected Sub dgvProductos_RowCommand(ByVal sender As Object, ByVal e As GridViewCommandEventArgs)
-        If e.CommandName = "Seleccionar" Then
-            Try
-                Dim id As Integer = Convert.ToInt32(e.CommandArgument)
-                Dim fila As DataRow = objProducto.buscarXid(id)
-                If fila IsNot Nothing Then
-                    txtId.Text = id.ToString()
-                    txtNombre.Text = Convert.ToString(fila("producto"))
-                    txtStock.Text = Convert.ToString(fila("stock"))
-                    chkVigencia.Checked = Convert.ToBoolean(fila("vigencia"))
-                    txtPrecio.Text = Convert.ToString(fila("precioactual"))
-                    SeleccionarPorTexto(cboMarcaProducto, Convert.ToString(fila("marcaproducto")))
-                    SeleccionarPorTexto(cboTipoProducto, Convert.ToString(fila("tipoproducto")))
-                    lblMensaje.Text = ""
-                End If
-            Catch ex As Exception
-                MostrarError("Error al seleccionar: " & ex.Message)
-            End Try
-        End If
     End Sub
 
     '====================== MENSAJES ======================
@@ -212,6 +175,17 @@ Partial Class jdGestionarProducto
     Private Sub MostrarExito(ByVal mensaje As String)
         lblMensaje.CssClass = "mensaje-exito"
         lblMensaje.Text = mensaje
+    End Sub
+
+    ' Si hay error de validación dentro del modal, lo mantenemos abierto y mostramos el aviso
+    Private Sub MostrarErrorModal(ByVal mensaje As String)
+        pnlForm.Visible = True
+        ScriptManagerAlerta(mensaje)
+    End Sub
+
+    Private Sub ScriptManagerAlerta(ByVal mensaje As String)
+        Dim limpio As String = mensaje.Replace("'", " ").Replace(Chr(10), " ").Replace(Chr(13), " ")
+        ClientScript.RegisterStartupScript(Me.GetType(), "alertaModal", "alert('" & limpio & "');", True)
     End Sub
 
 End Class

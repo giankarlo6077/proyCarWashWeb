@@ -26,47 +26,33 @@ Partial Class jdPapeleraProducto
         End Try
     End Sub
 
-    '====================== SELECCIONAR FILA ======================
+    '====================== ACCIONES POR FILA (Recuperar / Eliminar) ======================
     Protected Sub dgvPapelera_RowCommand(ByVal sender As Object, ByVal e As GridViewCommandEventArgs)
-        If e.CommandName = "Seleccionar" Then
-            txtId.Text = Convert.ToString(e.CommandArgument)
-            lblMensaje.Text = ""
-        End If
-    End Sub
+        Dim id As Integer
+        If Not Integer.TryParse(Convert.ToString(e.CommandArgument), id) Then Exit Sub
 
-    '====================== BOTONERA ======================
-    Protected Sub btnRecuperar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnRecuperar.Click
-        If txtId.Text.Trim() = "" Then
-            MostrarError("Seleccione un producto para recuperar")
-            Exit Sub
-        End If
-        Try
-            objProducto.recuperarProducto(Convert.ToInt32(txtId.Text))
-            MostrarExito("PRODUCTO RECUPERADO")
-            txtId.Text = ""
-            listar()
-        Catch ex As Exception
-            MostrarError("Error al recuperar: " & ex.Message)
-        End Try
-    End Sub
+        Select Case e.CommandName
+            Case "Recuperar"
+                Try
+                    objProducto.recuperarProducto(id)
+                    MostrarExito("PRODUCTO RECUPERADO")
+                    listar()
+                Catch ex As Exception
+                    MostrarError("Error al recuperar: " & ex.Message)
+                End Try
 
-    Protected Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
-        If txtId.Text.Trim() = "" Then
-            MostrarError("Escoja un producto para eliminar")
-            Exit Sub
-        End If
-        Try
-            objProducto.eliminarProducto(Convert.ToInt32(txtId.Text))
-            MostrarExito("PRODUCTO ELIMINADO")
-            txtId.Text = ""
-            listar()
-        Catch ex As Exception
-            MostrarError("Error al eliminar: " & ex.Message)
-        End Try
+            Case "Quitar"
+                Try
+                    objProducto.eliminarProducto(id)
+                    MostrarExito("PRODUCTO ELIMINADO")
+                    listar()
+                Catch ex As Exception
+                    MostrarError("Error al eliminar: " & ex.Message)
+                End Try
+        End Select
     End Sub
 
     Protected Sub btnActualizar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnActualizar.Click
-        txtId.Text = ""
         lblMensaje.Text = ""
         listar()
     End Sub

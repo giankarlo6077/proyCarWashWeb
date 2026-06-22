@@ -2,6 +2,10 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        .barra-volver { margin-bottom: 15px; }
+        .btn-volver { background: #6B7280; color: #fff; border: none; border-radius: 4px; padding: 8px 16px; font-size: 9pt; font-weight: bold; cursor: pointer; }
+        .btn-volver:hover { background: #4B5563; }
+
         .titulo-modulo { background-color: #111827; color: white; text-align: center; padding: 25px 20px; border-radius: 8px; margin-bottom: 25px; }
         .titulo-modulo h1 { margin: 0; font-size: 20pt; letter-spacing: 0.5px; }
         .titulo-modulo p { margin: 6px 0 0 0; font-size: 9pt; color: #9CA3AF; }
@@ -62,6 +66,10 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <div class="barra-volver">
+        <button type="button" class="btn-volver" onclick="window.location.href='FrmMenuPrincipal.aspx'; return false;">⬅️ Volver</button>
+    </div>
 
     <div class="titulo-modulo">
         <h1>MANTENIMIENTO DE PRODUCTOS</h1>

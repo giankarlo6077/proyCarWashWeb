@@ -7,14 +7,12 @@ Partial Class jdGestionarMarca
     Dim objMarca As New clsMarca()
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
-        ' Protección de sesión
         If Session("Usuario") Is Nothing Then
             Response.Redirect("jdInicioSesion.aspx")
             Exit Sub
         End If
 
         If Not Page.IsPostBack Then
-            btnNuevo.Text = "➕ Nuevo"
             lista()
         End If
     End Sub
@@ -29,103 +27,84 @@ Partial Class jdGestionarMarca
         End Try
     End Sub
 
-    Private Sub limpiar()
+    Private Sub limpiarForm()
         txtIdMarca.Text = ""
         txtNombre.Text = ""
     End Sub
 
-    '====================== BOTONERA ======================
-    Protected Sub btnBuscar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscar.Click
-        If txtIdMarca.Text.Trim() = "" Then
-            MostrarError("Ingresa por favor el id para buscar")
-            Exit Sub
-        End If
+    '====================== ABRIR MODAL: REGISTRAR NUEVO ======================
+    Protected Sub btnRegistrarNuevo_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnRegistrarNuevo.Click
         Try
-            Dim fila As DataRow = objMarca.buscarXid(Convert.ToInt32(txtIdMarca.Text))
-            If fila IsNot Nothing Then
-                txtNombre.Text = Convert.ToString(fila("marcaproducto"))
-                lblMensaje.Text = ""
-            Else
-                MostrarError("No se encontró la marca con ese ID")
-            End If
+            hdnModo.Value = "nuevo"
+            limpiarForm()
+            txtIdMarca.Text = objMarca.generarCodigoMarca().ToString()
+            lblFormTitulo.Text = "Registrar Marca"
+            pnlForm.Visible = True
+            lblMensaje.Text = ""
         Catch ex As Exception
-            MostrarError("Error al buscar: " & ex.Message)
+            MostrarError("Error al preparar el registro: " & ex.Message)
         End Try
     End Sub
 
-    Protected Sub btnNuevo_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnNuevo.Click
-        If btnNuevo.Text.Contains("Nuevo") Then
-            btnNuevo.Text = "💾 Guardar"
-            limpiar()
-            MostrarExito("Ingrese el nombre de la marca y presione Guardar.")
-        Else
-            btnNuevo.Text = "➕ Nuevo"
-            If txtNombre.Text.Trim() = "" Then
-                MostrarError("Ingrese el nombre de la marca")
-                Exit Sub
-            End If
-            Try
+    '====================== ACCIONES POR FILA (Editar / Eliminar) ======================
+    Protected Sub dgvMarcas_RowCommand(ByVal sender As Object, ByVal e As GridViewCommandEventArgs)
+        Dim id As Integer
+        If Not Integer.TryParse(Convert.ToString(e.CommandArgument), id) Then Exit Sub
+
+        Select Case e.CommandName
+            Case "Editar"
+                Try
+                    Dim fila As DataRow = objMarca.buscarXid(id)
+                    If fila IsNot Nothing Then
+                        hdnModo.Value = "editar"
+                        txtIdMarca.Text = id.ToString()
+                        txtNombre.Text = Convert.ToString(fila("marcaproducto"))
+                        lblFormTitulo.Text = "Modificar Marca"
+                        pnlForm.Visible = True
+                        lblMensaje.Text = ""
+                    End If
+                Catch ex As Exception
+                    MostrarError("Error al cargar la marca: " & ex.Message)
+                End Try
+
+            Case "Quitar"
+                Try
+                    objMarca.eliminarMarca(id)
+                    MostrarExito("MARCA ELIMINADA")
+                    lista()
+                Catch ex As Exception
+                    MostrarError("Error al eliminar: " & ex.Message)
+                End Try
+        End Select
+    End Sub
+
+    '====================== GUARDAR (Registrar o Modificar) ======================
+    Protected Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
+        If txtNombre.Text.Trim() = "" Then
+            MostrarErrorModal("Ingrese el nombre de la marca")
+            Exit Sub
+        End If
+        Try
+            If hdnModo.Value = "nuevo" Then
                 Dim id As Integer = objMarca.generarCodigoMarca()
                 objMarca.registrarMarca(id, txtNombre.Text.Trim())
                 MostrarExito("MARCA REGISTRADA")
-                lista()
-            Catch ex As Exception
-                MostrarError("Error al registrar: " & ex.Message)
-            End Try
-            limpiar()
-        End If
-    End Sub
-
-    Protected Sub btnModificar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnModificar.Click
-        If txtIdMarca.Text.Trim() = "" Then
-            MostrarError("Selecciona una marca para modificar")
-            Exit Sub
-        End If
-        Try
-            objMarca.modificarMarca(Convert.ToInt32(txtIdMarca.Text), txtNombre.Text.Trim())
-            MostrarExito("MARCA MODIFICADA")
+            Else
+                objMarca.modificarMarca(Convert.ToInt32(txtIdMarca.Text), txtNombre.Text.Trim())
+                MostrarExito("MARCA MODIFICADA")
+            End If
+            pnlForm.Visible = False
+            limpiarForm()
             lista()
-            limpiar()
         Catch ex As Exception
-            MostrarError("Error al modificar: " & ex.Message)
+            MostrarErrorModal("Error al guardar: " & ex.Message)
         End Try
     End Sub
 
-    Protected Sub btnLimpiar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnLimpiar.Click
-        limpiar()
+    Protected Sub btnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
+        pnlForm.Visible = False
+        limpiarForm()
         lblMensaje.Text = ""
-    End Sub
-
-    Protected Sub btnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
-        If txtIdMarca.Text.Trim() = "" Then
-            MostrarError("Selecciona una marca para eliminar")
-            Exit Sub
-        End If
-        Try
-            objMarca.eliminarMarca(Convert.ToInt32(txtIdMarca.Text))
-            MostrarExito("MARCA ELIMINADA")
-            lista()
-            limpiar()
-        Catch ex As Exception
-            MostrarError("Error al eliminar: " & ex.Message)
-        End Try
-    End Sub
-
-    '====================== SELECCIONAR FILA ======================
-    Protected Sub dgvMarcas_RowCommand(ByVal sender As Object, ByVal e As GridViewCommandEventArgs)
-        If e.CommandName = "Seleccionar" Then
-            Try
-                Dim id As Integer = Convert.ToInt32(e.CommandArgument)
-                Dim fila As DataRow = objMarca.buscarXid(id)
-                If fila IsNot Nothing Then
-                    txtIdMarca.Text = id.ToString()
-                    txtNombre.Text = Convert.ToString(fila("marcaproducto"))
-                    lblMensaje.Text = ""
-                End If
-            Catch ex As Exception
-                MostrarError("Error al seleccionar: " & ex.Message)
-            End Try
-        End If
     End Sub
 
     '====================== MENSAJES ======================
@@ -137,6 +116,12 @@ Partial Class jdGestionarMarca
     Private Sub MostrarExito(ByVal mensaje As String)
         lblMensaje.CssClass = "mensaje-exito"
         lblMensaje.Text = mensaje
+    End Sub
+
+    Private Sub MostrarErrorModal(ByVal mensaje As String)
+        pnlForm.Visible = True
+        Dim limpio As String = mensaje.Replace("'", " ").Replace(Chr(10), " ").Replace(Chr(13), " ")
+        ClientScript.RegisterStartupScript(Me.GetType(), "alertaModal", "alert('" & limpio & "');", True)
     End Sub
 
 End Class
