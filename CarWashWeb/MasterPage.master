@@ -168,7 +168,9 @@
                         <a href="FrmVehiculos.aspx">Vehículos</a>
                         <a href="FrmClientes.aspx">Clientes</a>
                         <a href="FrmTrabajadores.aspx">Trabajadores</a>
-                        <a href="FrmProducto.aspx">Producto</a>
+                        <a href="jdMantenimientoProducto.aspx">Producto</a>
+                        <a href="jdGestionarMarca.aspx">Marca</a>
+                        <a href="jdGestionarTipoProducto.aspx">Tipo de Producto</a>
                         <a href="FrmProveedor.aspx">Proveedor</a>
                         <a href="FrmRol.aspx">Rol</a>
                         <a href="FrmDescuentos.aspx">Descuentos</a>
