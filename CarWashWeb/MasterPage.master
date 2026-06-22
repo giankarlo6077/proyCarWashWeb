@@ -184,7 +184,7 @@
                     <span class="dropbtn">Reportes ▾</span>
                     <div class="dropdown-content">
                         <a href="jdHistorialMantenimiento.aspx">Reporte de Mantenimientos</a>
-                        <a href="Reporte2.aspx">Reporte2</a>
+                        <a href="jdReporteVehiculo.aspx">Consulta de Historial de Vehiculo</a>
                         <a href="jdBuscarCitasporEstado.aspx">Lista de Citas por Estado</a>
                     </div>
                 </div>
