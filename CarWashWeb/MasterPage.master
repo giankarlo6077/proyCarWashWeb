@@ -143,7 +143,7 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         min-height: 500px;
     }
-</style>
+    </style>
 
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -158,7 +158,7 @@
 
             <div class="menu-enlaces">
                 <div class="dropdown">
-                    <a href="Inicio.aspx" class="dropbtn">Inicio</a>
+                    <a href="FrmMenuPrincipal.aspx" class="dropbtn">Inicio</a>
                 </div>
 
                 <div class="dropdown">
@@ -174,7 +174,7 @@
                         <a href="FrmProveedor.aspx">Proveedor</a>
                         <a href="FrmRol.aspx">Rol</a>
                         <a href="FrmDescuentos.aspx">Descuentos</a>
-                        <a href="FrmServicios.aspx">Servicios</a>
+                        <a href="jdGestionarServicio.aspx">Servicios</a>
                     </div>
                 </div>
 
