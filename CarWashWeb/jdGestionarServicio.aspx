@@ -15,6 +15,7 @@
         .fila-buscar .form-control { flex: 1; }
         .btn-buscar { background-color: #1F2937; color: white; border: none; border-radius: 4px; padding: 0 16px; cursor: pointer; font-size: 11pt; }
         .btn-buscar:hover { background-color: #374151; }
+        
         .botonera { display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px; }
         .btn-accion { border: none; border-radius: 4px; padding: 10px 20px; font-weight: bold; font-family: Verdana, sans-serif; font-size: 9pt; cursor: pointer; color: white; }
         .btn-nuevo { background-color: #6B7280; }
@@ -25,6 +26,7 @@
         .btn-guardar:hover { background-color: #047857; }
         .btn-cancelar { background-color: #DC2626; }
         .btn-cancelar:hover { background-color: #B91C1C; }
+        
         .grid-servicios { width: 100%; border-collapse: collapse; font-size: 9pt; }
         .grid-servicios th { background-color: #1F2937; color: white; padding: 10px; text-align: left; position: sticky; top: 0; z-index: 1; }
         .grid-servicios td { padding: 8px 10px; border-bottom: 1px solid #E5E7EB; }
@@ -72,6 +74,7 @@
 
             <div class="botonera">
                 <asp:Button ID="btnNuevo" runat="server" Text="NUEVO" CssClass="btn-accion btn-nuevo" OnClick="btnNuevo_Click" CausesValidation="false" />
+                <asp:Button ID="btnModificar" runat="server" Text="MODIFICAR" CssClass="btn-accion btn-modificar" OnClick="btnModificar_Click" CausesValidation="false" />
                 <asp:Button ID="btnGuardar" runat="server" Text="GUARDAR" CssClass="btn-accion btn-guardar" OnClick="btnGuardar_Click" CausesValidation="false" />
                 <asp:Button ID="btnCancelar" runat="server" Text="CANCELAR" CssClass="btn-accion btn-cancelar" OnClick="btnCancelar_Click" CausesValidation="false" />
             </div>

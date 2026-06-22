@@ -1,5 +1,4 @@
-﻿
-Imports System.Data
+﻿Imports System.Data
 Imports capaNegocio
 
 Partial Class jdGestionarServicio
@@ -143,19 +142,18 @@ Partial Class jdGestionarServicio
 
     Protected Sub btnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs)
         lblMensaje.Text = ""
-        Dim idServicioActual As Integer = Convert.ToInt32(hdnIdServicio.Value)
 
-        ' Validaciones
+        ' Validaciones para GUARDAR (Solo nuevo)
+        If hdnIdServicio.Value <> "0" Then
+            MostrarError("Está editando un servicio existente. Utilice el botón MODIFICAR.")
+            Exit Sub
+        End If
         If txtCodigo.Text = "" Then
-            MostrarError("Debe hacer clic en 'NUEVO' o seleccionar un servicio de la tabla.")
+            MostrarError("Debe hacer clic en 'NUEVO' para generar un código.")
             Exit Sub
         End If
-        If cboNombre.SelectedIndex <= 0 Then
-            MostrarError("Debe seleccionar el nombre del servicio.")
-            Exit Sub
-        End If
-        If cboTipoVehiculo.SelectedValue = "No asignado" Then
-            MostrarError("Debe asignar un tipo de vehículo válido.")
+        If cboNombre.SelectedIndex <= 0 OrElse cboTipoVehiculo.SelectedValue = "No asignado" Then
+            MostrarError("Debe seleccionar el nombre del servicio y el tipo de vehículo.")
             Exit Sub
         End If
 
@@ -166,21 +164,45 @@ Partial Class jdGestionarServicio
             Dim precio As Decimal = Convert.ToDecimal(txtPrecio.Text)
             Dim idTipoVehiculo As Integer = objTipoVehiculo.obtenerCodigoTipoVehiculo(cboTipoVehiculo.SelectedValue)
 
-            If idServicioActual = 0 Then
-                ' Es NUEVO
-                objServicio.registrar(id, nombre, precio, tiempoEstimado, idTipoVehiculo)
-                MostrarExito("Servicio registrado correctamente.")
-            Else
-                ' Es EDICIÓN
-                objServicio.modificar(id, nombre, precio, tiempoEstimado, idTipoVehiculo)
-                MostrarExito("Servicio modificado correctamente.")
-            End If
+            objServicio.registrar(id, nombre, precio, tiempoEstimado, idTipoVehiculo)
+            MostrarExito("Servicio registrado correctamente.")
 
             LimpiarFormulario()
             CargarTablaServicios()
 
         Catch ex As Exception
             MostrarError("Error al guardar: " & ex.Message)
+        End Try
+    End Sub
+
+    Protected Sub btnModificar_Click(ByVal sender As Object, ByVal e As EventArgs)
+        lblMensaje.Text = ""
+
+        ' Validaciones para MODIFICAR
+        If hdnIdServicio.Value = "0" Then
+            MostrarError("Debe seleccionar un servicio de la tabla para modificar.")
+            Exit Sub
+        End If
+        If cboNombre.SelectedIndex <= 0 OrElse cboTipoVehiculo.SelectedValue = "No asignado" Then
+            MostrarError("Debe seleccionar el nombre del servicio y el tipo de vehículo.")
+            Exit Sub
+        End If
+
+        Try
+            Dim id As Integer = Convert.ToInt32(txtCodigo.Text)
+            Dim nombre As String = cboNombre.SelectedItem.Text
+            Dim tiempoEstimado As Integer = Convert.ToInt32(txtDuracion.Text)
+            Dim precio As Decimal = Convert.ToDecimal(txtPrecio.Text)
+            Dim idTipoVehiculo As Integer = objTipoVehiculo.obtenerCodigoTipoVehiculo(cboTipoVehiculo.SelectedValue)
+
+            objServicio.modificar(id, nombre, precio, tiempoEstimado, idTipoVehiculo)
+            MostrarExito("Servicio modificado correctamente.")
+
+            LimpiarFormulario()
+            CargarTablaServicios()
+
+        Catch ex As Exception
+            MostrarError("Error al modificar: " & ex.Message)
         End Try
     End Sub
 
@@ -192,7 +214,9 @@ Partial Class jdGestionarServicio
     End Sub
 
     Protected Sub txtBuscar_TextChanged(ByVal sender As Object, ByVal e As EventArgs)
-        CargarTablaServicios(txtBuscar.Text.Trim())
+        If String.IsNullOrWhiteSpace(txtBuscar.Text) Then
+            CargarTablaServicios()
+        End If
     End Sub
 
     Protected Sub dgvServicios_RowCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs)
@@ -229,7 +253,7 @@ Partial Class jdGestionarServicio
                 txtPrecio.Text = filaSeleccionada.Cells(2).Text
                 txtDuracion.Text = filaSeleccionada.Cells(3).Text
 
-                MostrarExito("Servicio seleccionado. Puede modificar los datos y presionar GUARDAR.")
+                MostrarExito("Servicio seleccionado. Puede modificar los datos y presionar MODIFICAR.")
             End If
         End If
     End Sub
