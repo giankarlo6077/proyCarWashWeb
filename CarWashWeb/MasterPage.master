@@ -191,6 +191,7 @@
                     <div class="dropdown-content">
                         <a href="jdHistorialMantenimiento.aspx">Reporte de Mantenimientos</a>
                         <a href="Reporte2.aspx">Reporte2</a>
+                        <a href="jdBuscarCitasporEstado.aspx">Lista de Citas por Estado</a>
                     </div>
                 </div>
             </div>
