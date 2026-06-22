@@ -183,7 +183,7 @@
                 <div class="dropdown">
                     <span class="dropbtn">Reportes ▾</span>
                     <div class="dropdown-content">
-                        <a href="Reporte1.aspx">Reporte1</a>
+                        <a href="jdHistorialMantenimiento.aspx">Reporte de Mantenimientos</a>
                         <a href="Reporte2.aspx">Reporte2</a>
                     </div>
                 </div>
