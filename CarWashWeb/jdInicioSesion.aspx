@@ -113,6 +113,7 @@
                 <label for="txtPassword">Contraseña</label>
                 <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="••••••••"></asp:TextBox>
             </div>
+            <a href="jdRecuperarContrasena.aspx" style="font-size: 8pt; color: #6B7280;">¿Olvidaste tu contraseña?</a>
 
             <asp:Button ID="btnIngresar" runat="server" Text="INGRESAR" CssClass="btn-ingresar" />
 
