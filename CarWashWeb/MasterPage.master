@@ -1,4 +1,8 @@
-﻿<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %><!DOCTYPE html><html><head runat="server">
+﻿<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %>
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Sistema Car Wash Web</title>
     
@@ -142,7 +146,9 @@
     </style>
 
     <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder></head><body>
+    </asp:ContentPlaceHolder>
+</head>
+<body>
     <form id="form1" runat="server">
 
         <div class="navbar">
@@ -161,8 +167,7 @@
                         <a href="jdGestionarUsuario.aspx">Usuarios</a>
                         <a href="jdGestionarVehiculo.aspx">Vehículos</a>
                         <a href="FrmClientes.aspx">Clientes</a>
-                        <a href="jdMantenimientoTrabajador.aspx">Trabajadores</a>
-                        <a href="jdMantenimientoProducto.aspx">Producto</a>
+                        <a href="jdMantenimientoTrabajador.aspx">Trabajadores</a> <a href="jdMantenimientoProducto.aspx">Producto</a>
                         <a href="jdGestionarMarca.aspx">Marca</a>
                         <a href="jdGestionarTipoProducto.aspx">Tipo de Producto</a>
                         <a href="FrmProveedor.aspx">Proveedor</a>
@@ -188,6 +193,10 @@
                         <a href="jdBuscarCitasporEstado.aspx">Lista de Citas por Estado</a>
                     </div>
                 </div>
+
+                <div class="dropdown">
+                    <a href="jdAcercaDe.aspx" class="dropbtn">Acerca de</a>
+                </div>
             </div>
         </div>
 
@@ -204,4 +213,6 @@
             </asp:ContentPlaceHolder>
         </div>
 
-    </form></body></html>
+    </form>
+</body>
+</html>
