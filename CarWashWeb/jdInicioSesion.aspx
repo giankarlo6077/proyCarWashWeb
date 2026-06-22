@@ -125,17 +125,3 @@
     </form>
 </body>
 </html>
-
-Namespace CarWashWeb
-    Public Partial Class jdInicioSesion
-        Inherits System.Web.UI.Page
-
-        Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
-            ' Código de carga si es necesario
-        End Sub
-
-        Protected Sub btnIngresar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnIngresar.Click
-            ' Lógica de autenticación
-        End Sub
-    End Class
-End Namespace
