@@ -1,4 +1,4 @@
-﻿<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %><!DOCTYPE html><html><head runat="server">
+﻿<%@ master language="VB" inherits="MasterPage, App_Web_a2x5mcfx" %><!DOCTYPE html><html><head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Sistema Car Wash Web</title>
     
@@ -161,7 +161,7 @@
                         <a href="jdGestionarUsuario.aspx">Usuarios</a>
                         <a href="jdGestionarVehiculo.aspx">Vehículos</a>
                         <a href="FrmClientes.aspx">Clientes</a>
-                        <a href="jdMantenimientoTrabajador  .aspx">Trabajadores</a>
+                        <a href="jdMantenimientoTrabajador.aspx">Trabajadores</a>
                         <a href="jdMantenimientoProducto.aspx">Producto</a>
                         <a href="jdGestionarMarca.aspx">Marca</a>
                         <a href="jdGestionarTipoProducto.aspx">Tipo de Producto</a>
