@@ -167,7 +167,7 @@
                         <a href="jdGestionarTipoProducto.aspx">Tipo de Producto</a>
                         <a href="FrmProveedor.aspx">Proveedor</a>
                         <a href="FrmRol.aspx">Rol</a>
-                        <a href="FrmDescuentos.aspx">Descuentos</a>
+                        <a href="jdGestionarDescuento.aspx">Descuentos</a>
                         <a href="jdGestionarServicio.aspx">Servicios</a>
                     </div>
                 </div>
