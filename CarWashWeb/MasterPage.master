@@ -1,4 +1,4 @@
-﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="MasterPage.master.vb" Inherits="CarWashWeb.MasterPage" %>
+﻿<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %>
 
 <!DOCTYPE html>
 <html>
@@ -7,7 +7,6 @@
     <title>Sistema Car Wash Web</title>
     
     <style>
-        /* Tipografía y fondo general */
         body {
             font-family: Verdana, sans-serif;
             margin: 0;
@@ -15,26 +14,24 @@
             background-color: #F3F4F6; 
         }
         
-        /* 1. Barra de Navegación */
         .navbar {
             background-color: #1F2937; 
             color: white;
-            padding: 10px 30px; /* Reduje un poco el padding superior/inferior si usamos logo */
+            padding: 10px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
-        /* Contenedor para alinear el logo y el título */
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 15px; /* Separación entre el logo y el texto */
+            gap: 15px;
         }
 
         .logo-container img {
-            height: 40px; /* Tamaño ideal para un logo en la barra */
+            height: 40px;
             width: auto;
         }
 
@@ -43,17 +40,15 @@
             font-size: 16pt;
         }
 
-        /* 2. Menú y Separación */
         .menu-enlaces {
             display: flex;
             align-items: center;
         }
 
-        /* 3. Magia del Menú Desplegable (Dropdown) */
         .dropdown {
             position: relative;
             display: inline-block;
-            margin-left: 45px; /* Aumenté la separación entre los menús a 45px */
+            margin-left: 45px;
         }
 
         .dropbtn {
@@ -66,7 +61,6 @@
             display: block;
         }
 
-        /* La caja que aparece al pasar el mouse */
         .dropdown-content {
             display: none;
             position: absolute;
@@ -75,14 +69,13 @@
             box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
             z-index: 1;
             border-radius: 4px;
-            top: 100%; /* Justo debajo del texto */
+            top: 100%;
             left: 0; 
-            overflow: hidden; /* Para que los bordes redondeados no se rompan */
+            overflow: hidden;
         }
 
-        /* Los enlaces dentro del menú desplegable */
         .dropdown-content a {
-            color: #1F2937; /* Azul oscuro para que contraste en fondo blanco */
+            color: #1F2937;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
@@ -90,20 +83,18 @@
             border-bottom: 1px solid #E5E7EB;
         }
 
-        /* Efectos al pasar el mouse (Hover) */
         .dropdown-content a:hover {
             background-color: #F3F4F6;
         }
 
         .dropdown:hover .dropdown-content {
-            display: block; /* Muestra la caja */
+            display: block;
         }
 
         .dropdown:hover .dropbtn {
-            color: #9CA3AF; /* Pone el título principal gris */
+            color: #9CA3AF;
         }
 
-        /* 4. Contenedor central de los formularios */
         .contenedor-principal {
             padding: 30px;
             margin: 30px auto;
@@ -111,7 +102,7 @@
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            min-height: 500px; /* Para que la página no se vea corta si no hay contenido */
+            min-height: 500px;
         }
     </style>
 
@@ -123,8 +114,7 @@
         
         <div class="navbar">
             <div class="logo-container">
-                <img src="ruta-de-tu-logo.png" alt="Logo Car Wash" onerror="this.style.display='none'" />
-                <h2>Sistema Car Wash</h2>
+                <h2>🚗 Sistema Car Wash</h2>
             </div>
 
             <div class="menu-enlaces">

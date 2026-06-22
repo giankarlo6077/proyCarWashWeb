@@ -1,4 +1,4 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="jdInicioSesion.aspx.vb" Inherits="CarWashWeb.jdInicioSesion" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="jdInicioSesion.aspx.vb" Inherits="jdInicioSesion" %>
 
 <!DOCTYPE html>
 <html>
@@ -7,30 +7,29 @@
     <title>Iniciar Sesión - Car Wash</title>
 
     <style>
-        /* Aplicando el manual de estilos estandarizado */
         body {
             font-family: Verdana, sans-serif;
-            background-color: #F3F4F6; /* Fondo gris claro corporativo */
+            background-color: #F3F4F6;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center; /* Centrado horizontal */
-            align-items: center;     /* Centrado vertical */
-            height: 100vh;           /* Ocupa el 100% de la altura de la pantalla */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .login-container {
             background-color: white;
             padding: 40px;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil y moderna */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 350px; /* Ancho fijo para la caja de login */
+            max-width: 350px;
             text-align: center;
         }
 
         .login-header h2 {
-            color: #1F2937; /* Azul oscuro corporativo */
+            color: #1F2937;
             font-size: 18pt;
             margin-bottom: 5px;
         }
@@ -54,7 +53,6 @@
             margin-bottom: 5px;
         }
 
-        /* Estilo para las cajas de texto de ASP.NET */
         .form-control {
             width: 100%;
             padding: 10px;
@@ -67,10 +65,9 @@
 
         .form-control:focus {
             outline: none;
-            border-color: #1F2937; /* Resalta en azul oscuro al escribir */
+            border-color: #1F2937;
         }
 
-        /* Estilo para el botón principal de ASP.NET */
         .btn-ingresar {
             background-color: #1F2937;
             color: white;
@@ -87,11 +84,11 @@
         }
 
         .btn-ingresar:hover {
-            background-color: #374151; /* Un tono un poco más claro al pasar el mouse */
+            background-color: #374151;
         }
 
         .mensaje-error {
-            color: #DC2626; /* Rojo para errores */
+            color: #DC2626;
             font-size: 8pt;
             margin-top: 15px;
             display: block;
