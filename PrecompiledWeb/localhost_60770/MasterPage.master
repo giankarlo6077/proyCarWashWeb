@@ -1,4 +1,4 @@
-﻿<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %><!DOCTYPE html><html><head runat="server">
+﻿<%@ master language="VB" inherits="MasterPage, App_Web_a2x5mcfx" %><!DOCTYPE html><html><head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Sistema Car Wash Web</title>
     
@@ -183,9 +183,8 @@
                 <div class="dropdown">
                     <span class="dropbtn">Reportes ▾</span>
                     <div class="dropdown-content">
-                        <a href="jdHistorialMantenimiento.aspx">Reporte de Mantenimientos</a>
+                        <a href="Reporte1.aspx">Reporte1</a>
                         <a href="Reporte2.aspx">Reporte2</a>
-                        <a href="jdBuscarCitasporEstado.aspx">Lista de Citas por Estado</a>
                     </div>
                 </div>
             </div>
