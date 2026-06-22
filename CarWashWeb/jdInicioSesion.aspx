@@ -100,7 +100,7 @@
         <div class="login-container">
             
             <div class="login-header">
-                <h2>🚗 Car Wash</h2>
+                <h2>Car Wash</h2>
                 <p>Ingresa tus credenciales para continuar</p>
             </div>
 
