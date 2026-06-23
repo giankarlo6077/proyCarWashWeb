@@ -1,4 +1,4 @@
-﻿<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %>
+﻿﻿<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %>
 
 <!DOCTYPE html>
 <html>
@@ -95,7 +95,30 @@
     .dropdown:hover .dropbtn {
         color: #9CA3AF;
     }
+    .dropdown-usuario {
 
+    }
+
+    .link-cerrar-sesion {
+        color: #DC2626;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-size: 9pt;
+        border-bottom: 1px solid #E5E7EB;
+        cursor: pointer;
+        font-family: Verdana, sans-serif;
+        background: none;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        width: 100%;
+        text-align: left;
+    }
+
+    .link-cerrar-sesion:hover {
+        background-color: #FEE2E2;
+    }
     /* ===== BANNER HERO (debajo del navbar) ===== */
     .banner-hero {
         position: relative;
@@ -143,6 +166,7 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         min-height: 500px;
     }
+
     </style>
 
     <asp:ContentPlaceHolder ID="head" runat="server">
@@ -158,16 +182,14 @@
 
             <div class="menu-enlaces">
                 <div class="dropdown">
-                    <a href="FrmMenuPrincipal.aspx" class="dropbtn">Inicio</a>
+                    <a href="FrmMenuPrincipal.aspx" class="dropbtn">Inicio </a>
                 </div>
 
                 <div class="dropdown dropdown-usuario">
-                    <span class="dropbtn">👤
+                    <span class="dropbtn">
                         <asp:Label ID="lblNombreUsuarioNav" runat="server" Text=""></asp:Label>
-                        ▾
                     </span>
                     <div class="dropdown-content">
-                        <a href="FrmMenuPrincipal.aspx">Mi Perfil</a>
                         <asp:LinkButton ID="btnCerrarSesion" runat="server" OnClick="btnCerrarSesion_Click" CssClass="link-cerrar-sesion">Cerrar Sesión</asp:LinkButton>
                     </div>
                 </div>

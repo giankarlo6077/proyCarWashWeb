@@ -222,8 +222,7 @@
 
             <div class="campo-form">
                 <label>Pregunta de Seguridad:</label>
-                <asp:DropDownList ID="cboPregunta" runat="server" CssClass="form-control">
-                </asp:DropDownList>
+                <asp:TextBox ID="txtPregunta" runat="server" CssClass="form-control" placeholder="Ej: ¿Ciudad de nacimiento?" ReadOnly="true"></asp:TextBox>
             </div>
 
             <div class="campo-form">

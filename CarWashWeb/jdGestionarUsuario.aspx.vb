@@ -11,7 +11,6 @@ Partial Class jdGestionarUsuario
     '================================================================
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
 
-        ' Protegemos la página
         If Session("Usuario") Is Nothing Then
             Response.Redirect("jdInicioSesion.aspx")
             Exit Sub
@@ -20,7 +19,6 @@ Partial Class jdGestionarUsuario
         If Not Page.IsPostBack Then
             Try
                 CargarTablaUsuarios()
-                CargarComboPreguntas()
                 LimpiarFormulario()
             Catch ex As Exception
                 MostrarError("Error al cargar el formulario: " & ex.Message)
@@ -37,48 +35,13 @@ Partial Class jdGestionarUsuario
         dgvUsuarios.DataBind()
     End Sub
 
-    Private Sub CargarComboPreguntas()
-        Try
-            cboPregunta.Items.Clear()
-
-            ' 1. Preguntas por defecto (siempre disponibles)
-            cboPregunta.Items.Add(New ListItem("¿Nombre de tu primera mascota?"))
-            cboPregunta.Items.Add(New ListItem("¿Ciudad de nacimiento?"))
-            cboPregunta.Items.Add(New ListItem("¿Nombre de tu escuela primaria?"))
-
-            ' 2. Preguntas ya existentes en la BD (sin duplicar)
-            Dim dt As DataTable = objTrabajador.ListarPreguntasSeguridad()
-
-            For Each fila As DataRow In dt.Rows
-                Dim preguntaBD As String = fila("pregunta").ToString().Trim()
-
-                Dim yaExiste As Boolean = False
-                For Each item As ListItem In cboPregunta.Items
-                    If item.Text = preguntaBD Then
-                        yaExiste = True
-                        Exit For
-                    End If
-                Next
-
-                If Not yaExiste Then
-                    cboPregunta.Items.Add(New ListItem(preguntaBD))
-                End If
-            Next
-
-            cboPregunta.SelectedIndex = -1
-
-        Catch ex As Exception
-            MostrarError("Error al cargar preguntas: " & ex.Message)
-        End Try
-    End Sub
-
     Private Sub LimpiarFormulario()
         hdnIdTrabajador.Value = "0"
         txtTrabajador.Text = ""
         txtUsuario.Text = ""
         txtContrasena.Text = ""
         txtConfirmarContrasena.Text = ""
-        cboPregunta.SelectedIndex = -1
+        txtPregunta.Text = ""
         txtRespuesta.Text = ""
         chkActivo.Checked = True
     End Sub
@@ -101,7 +64,6 @@ Partial Class jdGestionarUsuario
         lblMensaje.Text = ""
         Dim idTrabajadorSeleccionado As Integer = Convert.ToInt32(hdnIdTrabajador.Value)
 
-        ' 1. Validaciones
         If idTrabajadorSeleccionado = 0 Then
             MostrarError("Debe seleccionar un trabajador de la tabla haciendo clic en ""Seleccionar"".")
             Exit Sub
@@ -112,8 +74,8 @@ Partial Class jdGestionarUsuario
             Exit Sub
         End If
 
-        If cboPregunta.SelectedIndex = -1 Then
-            MostrarError("Debe seleccionar una pregunta de seguridad.")
+        If txtPregunta.Text.Trim() = "" Then
+            MostrarError("Debe ingresar una pregunta de seguridad.")
             Exit Sub
         End If
 
@@ -127,9 +89,8 @@ Partial Class jdGestionarUsuario
             Exit Sub
         End If
 
-        ' 2. Guardar en BD
         Try
-            Dim preguntaStr As String = cboPregunta.SelectedItem.Text
+            Dim preguntaStr As String = txtPregunta.Text.Trim()
 
             objTrabajador.GuardarCredenciales(idTrabajadorSeleccionado, txtUsuario.Text.Trim(), txtContrasena.Text, preguntaStr, txtRespuesta.Text.Trim(), chkActivo.Checked)
 
@@ -155,7 +116,7 @@ Partial Class jdGestionarUsuario
     End Sub
 
     '================================================================
-    ' SELECCIONAR FILA DEL GRID (equivalente al doble clic de escritorio)
+    ' SELECCIONAR FILA DEL GRID
     '================================================================
     Protected Sub dgvUsuarios_RowCommand(ByVal sender As Object, ByVal e As GridViewCommandEventArgs)
 
@@ -163,7 +124,6 @@ Partial Class jdGestionarUsuario
 
             Dim idTrabajador As Integer = Convert.ToInt32(e.CommandArgument)
 
-            ' Buscamos la fila correspondiente dentro del DataSource actual
             Dim filaSeleccionada As GridViewRow = Nothing
             For Each fila As GridViewRow In dgvUsuarios.Rows
                 If Convert.ToInt32(dgvUsuarios.DataKeys(fila.RowIndex).Value) = idTrabajador Then
@@ -174,17 +134,26 @@ Partial Class jdGestionarUsuario
 
             If filaSeleccionada IsNot Nothing Then
                 hdnIdTrabajador.Value = idTrabajador.ToString()
-                txtTrabajador.Text = filaSeleccionada.Cells(1).Text
-                txtUsuario.Text = filaSeleccionada.Cells(2).Text
+                txtTrabajador.Text = Server.HtmlDecode(filaSeleccionada.Cells(1).Text)
+                txtUsuario.Text = Server.HtmlDecode(filaSeleccionada.Cells(2).Text)
 
                 Dim activoTexto As String = filaSeleccionada.Cells(3).Text
                 chkActivo.Checked = (activoTexto = "Sí")
 
-                ' Limpiamos contraseñas y preguntas por seguridad (igual que en escritorio)
+                ' Limpiamos contraseñas y respuesta por seguridad
                 txtContrasena.Text = ""
                 txtConfirmarContrasena.Text = ""
                 txtRespuesta.Text = ""
-                cboPregunta.SelectedIndex = -1
+
+                ' La pregunta SÍ se muestra, consultándola directo de la BD
+                Try
+                    txtPregunta.Text = objTrabajador.PreguntaRecuperarContra(txtUsuario.Text.Trim())
+
+                    txtPregunta.ReadOnly = True
+
+                Catch ex As Exception
+                    txtPregunta.Text = ""
+                End Try
 
                 lblMensaje.Text = ""
             End If
@@ -205,5 +174,7 @@ Partial Class jdGestionarUsuario
         lblMensaje.CssClass = "mensaje-exito"
         lblMensaje.Text = mensaje
     End Sub
+
+
 
 End Class
