@@ -182,7 +182,7 @@
         <div class="panel-box">
             <div class="fila-buscar">
                 <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control" placeholder="Buscar por nombre de trabajador..." AutoPostBack="true" OnTextChanged="txtBuscar_TextChanged"></asp:TextBox>
-                <asp:Button ID="btnBuscar" runat="server" Text="🔍" CssClass="btn-buscar" OnClick="btnBuscar_Click" CausesValidation="false" />
+                <asp:Button ID="btnBuscar" runat="server" Text="BUSCAR" CssClass="btn-seleccionar" OnClick="btnBuscar_Click" CausesValidation="false" />
             </div>
 
             <div class="contenedor-tabla-scroll">
