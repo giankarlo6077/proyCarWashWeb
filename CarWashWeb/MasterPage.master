@@ -180,7 +180,7 @@
                 <div class="dropdown">
                     <span class="dropbtn">Citas/Ventas ▾</span>
                     <div class="dropdown-content">
-                        <a href="FrmRegistrarCita.aspx">Registrar Cita</a>
+                        <a href="jdGestionarCitas.aspx">Registrar Cita</a>
                         <a href="JdVentas.aspx">Registrar Venta</a>
                     </div>
                 </div>

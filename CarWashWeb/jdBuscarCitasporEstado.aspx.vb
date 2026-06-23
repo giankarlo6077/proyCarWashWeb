@@ -19,4 +19,8 @@ Partial Class jdBuscarCitasporEstado
     Protected Sub btnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         listar(ddlSexo.SelectedItem.ToString())
     End Sub
+
+    Protected Sub btnNuevaCita_Click(sender As Object, e As EventArgs) Handles btnNuevaCita.Click
+        Response.Redirect("jdGestionarCitas.aspx")
+    End Sub
 End Class
