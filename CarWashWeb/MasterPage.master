@@ -161,6 +161,17 @@
                     <a href="FrmMenuPrincipal.aspx" class="dropbtn">Inicio</a>
                 </div>
 
+                <div class="dropdown dropdown-usuario">
+                    <span class="dropbtn">👤
+                        <asp:Label ID="lblNombreUsuarioNav" runat="server" Text=""></asp:Label>
+                        ▾
+                    </span>
+                    <div class="dropdown-content">
+                        <a href="FrmMenuPrincipal.aspx">Mi Perfil</a>
+                        <asp:LinkButton ID="btnCerrarSesion" runat="server" OnClick="btnCerrarSesion_Click" CssClass="link-cerrar-sesion">Cerrar Sesión</asp:LinkButton>
+                    </div>
+                </div>
+
                 <div class="dropdown">
                     <span class="dropbtn">Mantenimiento ▾</span>
                     <div class="dropdown-content">

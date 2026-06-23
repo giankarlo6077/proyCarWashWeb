@@ -179,7 +179,7 @@
 
         <div class="panel-box info-empresa">
             <div class="seccion-titulo">Información de la empresa</div>
-            <h2>Washycar</h2>
+            <h2>Washcar</h2>
             <p>Sistema integral de gestión diseñado para optimizar el flujo de trabajo en centros de servicio automotriz.</p>
             
             <div class="mision-vision-grid">
