@@ -31,6 +31,8 @@
         .fila-buscar .form-control { flex: 1; padding: 8px 10px; border: 1px solid #D1D5DB; border-radius: 4px; font-family: Verdana, sans-serif; font-size: 9pt; box-sizing: border-box; }
         .btn-buscar { background-color: #1F2937; color: white; border: none; border-radius: 4px; padding: 0 16px; cursor: pointer; font-size: 11pt; }
         .btn-buscar:hover { background-color: #374151; }
+        .btn-nuevaCita { background-color: #1F2937; color: white; border: none; border-radius: 4px; padding: 0 16px; cursor: pointer; font-size: 11pt; }
+        .btn-nuevaCita:hover { background-color: #374151; }
 
         .botonera { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 25px; }
         .botonera.izquierda { justify-content: flex-start; }
@@ -87,7 +89,8 @@
                     <asp:ListItem>Realizado</asp:ListItem>
                     <asp:ListItem>Cancelada</asp:ListItem>
                 </asp:DropDownList>
-                <asp:Button ID="btnBuscar" runat="server" Text="🔍" CssClass="btn-buscar" CausesValidation="false" />
+                <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="btn-buscar" CausesValidation="false" />
+                <asp:Button ID="btnNuevaCita" runat="server" Text="Nueva Cita" CssClass="btn-nuevaCita" CausesValidation="false" />
             </div>
 
             <div class="contenedor-tabla-scroll">

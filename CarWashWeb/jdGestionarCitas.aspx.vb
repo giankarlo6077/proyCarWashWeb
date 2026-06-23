@@ -30,7 +30,7 @@ Partial Class jdGestionarCitas
     Protected Sub dgvCitas_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If e.CommandName = "VerDetalle" Then
             Dim idCita As Integer = CInt(e.CommandArgument)
-            Response.Redirect("DetalleOrdenTrabajo.aspx?idCita=" & idCita)
+            Response.Redirect("jdDetalleOrdenTrabajo.aspx?idCita=" & idCita)
         End If
     End Sub
 

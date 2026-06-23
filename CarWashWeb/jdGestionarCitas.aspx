@@ -2,6 +2,10 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
     <style>
+        .barra-volver { margin-bottom: 15px; }
+        .btn-volver { background: #6B7280; color: #fff; border: none; border-radius: 4px; padding: 8px 16px; font-size: 9pt; font-weight: bold; cursor: pointer; }
+        .btn-volver:hover { background: #4B5563; }
+
         .titulo-modulo { background-color: #111827; color: white; text-align: center; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-size: 16pt; font-family: sans-serif; }
         .panel-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; }
         .panel-box { border: 1px solid #D1D5DB; padding: 20px; background: white; border-radius: 6px; }
@@ -34,7 +38,6 @@
 
     <div class="titulo-modulo">
         <h1>GESTIÓN DE CITAS</h1>
-        <p>Registra y visualiza las citas ingresadas</p>
     </div>
 
     <div class="panel-grid">
@@ -109,7 +112,8 @@
                     AutoGenerateColumns="false"
                     CssClass="grid-estilo"
                     DataKeyNames="idCita"
-                    GridLines="None">
+                    GridLines="None"
+                    OnRowCommand="dgvCitas_RowCommand">
                     <Columns>
                         <asp:BoundField DataField="idCita"      HeaderText="ID"         />
                         <asp:BoundField DataField="fecha"       HeaderText="Fecha"      />
