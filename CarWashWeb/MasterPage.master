@@ -165,7 +165,7 @@
                         <a href="jdMantenimientoProducto.aspx">Producto</a>
                         <a href="jdGestionarMarca.aspx">Marca</a>
                         <a href="jdGestionarTipoProducto.aspx">Tipo de Producto</a>
-                        <a href="FrmProveedor.aspx">Proveedor</a>
+                        <a href="JdMantenimientoProveedor.aspx">Proveedor</a>
                         <a href="FrmRol.aspx">Rol</a>
                         <a href="jdGestionarDescuento.aspx">Descuentos</a>
                         <a href="jdGestionarServicio.aspx">Servicios</a>
@@ -176,7 +176,7 @@
                     <span class="dropbtn">Citas/Ventas ▾</span>
                     <div class="dropdown-content">
                         <a href="FrmRegistrarCita.aspx">Registrar Cita</a>
-                        <a href="FrmRegistrarVenta.aspx">Registrar Venta</a>
+                        <a href="JdVentas.aspx">Registrar Venta</a>
                     </div>
                 </div>
 

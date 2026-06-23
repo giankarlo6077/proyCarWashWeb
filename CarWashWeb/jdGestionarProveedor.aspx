@@ -1,7 +1,17 @@
 <%@ Page Title="Gestión de Proveedores" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="jdGestionarProveedor.aspx.vb" Inherits="jdGestionarProveedor" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <%-- Cuando la página se abre dentro del modal (iframe), ocultamos el encabezado --%>
+    <script type="text/javascript">
+        if (window.self !== window.top) {
+            document.documentElement.className += ' embed-modal';
+        }
+    </script>
     <style>
+        .embed-modal .navbar,
+        .embed-modal .banner-hero { display: none !important; }
+        .embed-modal .contenedor-principal { margin: 0 auto; box-shadow: none; min-height: 0; }
+
         .titulo-modulo {
             background-color: #111827;
             color: white;
