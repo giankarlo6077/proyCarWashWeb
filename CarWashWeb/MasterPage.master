@@ -177,12 +177,12 @@
                     <div class="dropdown-content">
                         <a href="jdGestionarUsuario.aspx">Usuarios</a>
                         <a href="jdGestionarVehiculo.aspx">Vehículos</a>
-                        <a href="FrmClientes.aspx">Clientes</a>
+                        <a href="jdGestionarClientes.aspx">Clientes</a>
                         <a href="jdMantenimientoTrabajador.aspx">Trabajadores</a> <a href="jdMantenimientoProducto.aspx">Producto</a>
                         <a href="jdGestionarMarca.aspx">Marca</a>
                         <a href="jdGestionarTipoProducto.aspx">Tipo de Producto</a>
                         <a href="JdMantenimientoProveedor.aspx">Proveedor</a>
-                        <a href="FrmRol.aspx">Rol</a>
+                        <a href="jdGestionarRol.aspx">Rol</a>
                         <a href="jdGestionarDescuento.aspx">Descuentos</a>
                         <a href="jdGestionarServicio.aspx">Servicios</a>
                     </div>
