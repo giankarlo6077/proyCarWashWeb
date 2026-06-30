@@ -1,10 +1,10 @@
 ﻿Imports System.Data
 Imports System.Globalization
-Imports capaNegocio
+Imports ServiceReference1
 Partial Class jdDetalleOrdenTrabajo
     Inherits System.Web.UI.Page
 
-    Dim objCita As New clsCita
+    Dim objCita As New WebServiceSoapClient
     Private _idCita As Integer
 
     ' ─── PROPIEDADES DE SESSION ──────────────────────────────────────────
@@ -66,12 +66,15 @@ Partial Class jdDetalleOrdenTrabajo
 
     ' ─── CARGA DE DATOS ──────────────────────────────────────────────────
     Private Sub CargarDatosCita()
-        Dim fila As DataRow = objCita.cargarDatosCita(_idCita)
+        Dim dt As DataTable = objCita.cargarDatosCita(_idCita)  ' ahora es DataTable
 
-        If fila Is Nothing Then
+        If dt Is Nothing OrElse dt.Rows.Count = 0 Then
             MostrarMensaje("⚠ No se encontró la cita.", "red")
             Return
         End If
+
+        ' Tomas la primera fila del DataTable
+        Dim fila As DataRow = dt.Rows(0)
 
         lblidCita.Text = fila("idCita").ToString()
         lblFecha.Text = CDate(fila("fecha")).ToString("dd/MM/yyyy")
@@ -85,12 +88,9 @@ Partial Class jdDetalleOrdenTrabajo
         txtComentario.Text = fila("comentario").ToString()
         dtpFechaRecojo.Text = CDate(fila("fechaRecojo")).ToString("yyyy-MM-dd")
 
-        ' Estado
-        cmbEstado.ClearSelection()
         Dim itemEstado = cmbEstado.Items.FindByValue(fila("estado").ToString())
         If itemEstado IsNot Nothing Then itemEstado.Selected = True
 
-        ' Cargar servicios y productos actuales de la cita en Session
         dtServicios = objCita.cargarServiciosdelaCita(_idCita)
         dtProductos = objCita.cargarProductosdelaCita(_idCita)
     End Sub
@@ -101,10 +101,9 @@ Partial Class jdDetalleOrdenTrabajo
         cmbTrabajador.DataValueField = "idTrabajador"
         cmbTrabajador.DataBind()
 
-        ' Seleccionar el trabajador asignado a la cita
-        Dim fila As DataRow = objCita.cargarDatosCita(_idCita)
-        If fila IsNot Nothing Then
-            Dim item = cmbTrabajador.Items.FindByText(fila("trabajador").ToString())
+        Dim dt As DataTable = objCita.cargarDatosCita(_idCita)  ' DataTable, no DataRow
+        If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+            Dim item = cmbTrabajador.Items.FindByText(dt.Rows(0)("trabajador").ToString())
             If item IsNot Nothing Then item.Selected = True
         End If
     End Sub
@@ -121,7 +120,7 @@ Partial Class jdDetalleOrdenTrabajo
 
     ' ─── MODAL SERVICIOS ─────────────────────────────────────────────────
     Protected Sub btnAgregarServicio_Click(sender As Object, e As EventArgs)
-        dgvSelecServicios.DataSource = objCita.listarServicios()
+        dgvSelecServicios.DataSource = objCita.listarServiciosCita()
         dgvSelecServicios.DataBind()
         hdnMostrarModalServicio.Value = "1"
     End Sub
@@ -152,7 +151,7 @@ Partial Class jdDetalleOrdenTrabajo
             End If
 
             ' Obtener nombre del servicio
-            Dim dt As DataTable = objCita.listarServicios()
+            Dim dt As DataTable = objCita.listarServiciosCita()
             Dim filaServ = dt.AsEnumerable().FirstOrDefault(Function(r) CInt(r("idServicio")) = idServicio)
 
             Dim dr As DataRow = dtServicios.NewRow()
@@ -172,7 +171,7 @@ Partial Class jdDetalleOrdenTrabajo
 
     ' ─── MODAL PRODUCTOS ─────────────────────────────────────────────────
     Protected Sub btnAgregarProducto_Click(sender As Object, e As EventArgs)
-        dgvSelecProductos.DataSource = objCita.listarProductos()
+        dgvSelecProductos.DataSource = objCita.listarProductosCita()
         dgvSelecProductos.DataBind()
         hdnMostrarModalProducto.Value = "1"
     End Sub
@@ -181,7 +180,7 @@ Partial Class jdDetalleOrdenTrabajo
         If e.CommandName = "ElegirProducto" Then
             Dim idProducto As Integer = CInt(e.CommandArgument)
 
-            Dim dt As DataTable = objCita.listarProductos()
+            Dim dt As DataTable = objCita.listarProductosCita()
             Dim filaProd = dt.AsEnumerable().FirstOrDefault(Function(r) CInt(r("idProducto")) = idProducto)
 
             If filaProd Is Nothing Then Return

@@ -1,10 +1,10 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports ServiceReference1
 
 Partial Class jdBuscarCitasporEstado
     Inherits System.Web.UI.Page
 
-    Dim objCita As New clsCita()
+    Dim objCita As New WebServiceSoapClient
 
     Private Sub listar(ByVal dato As String)
         Try
