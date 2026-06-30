@@ -1,12 +1,13 @@
 ﻿Imports System.Data
 Imports System.Collections.Generic
-Imports capaNegocio
+Imports ServiceReference1
 
 Partial Class jdGestionarVehiculo
     Inherits System.Web.UI.Page
 
-    Dim objVehiculo As New clsVehiculo()
-    Dim objModeloVehiculo As New clsModeloVehiculo()
+    ' Se reemplazan las clases locales por el cliente del Web Service
+    Dim objVehiculo As New WebServiceSoapClient()
+    Dim objModeloVehiculo As New WebServiceSoapClient()
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not Page.IsPostBack Then
@@ -27,7 +28,8 @@ Partial Class jdGestionarVehiculo
 
     Private Sub CargarCombo()
         Try
-            Dim dt As DataTable = objModeloVehiculo.listar()
+            ' CORRECCIÓN: Se usa listarModeloVehiculo() según el Web Service
+            Dim dt As DataTable = objModeloVehiculo.listarModeloVehiculo()
             cboModelo.DataSource = dt
             cboModelo.DataTextField = "modelovehiculo"
             cboModelo.DataValueField = "idModeloVehiculo"
@@ -157,7 +159,8 @@ Partial Class jdGestionarVehiculo
             Dim modeloV As Integer = objModeloVehiculo.buscarIdxNombre(cboModelo.SelectedItem.Text)
             Dim nuevoId As Integer = objVehiculo.obtenercod()
 
-            objVehiculo.registrar(nuevoId, txtPlaca.Text.Trim(), Convert.ToInt32(txtAño.Text.Trim()), modeloV, idClienteFinal)
+            ' CORRECCIÓN: Se usa registrarVehiculo() según el Web Service
+            objVehiculo.registrarVehiculo(nuevoId, txtPlaca.Text.Trim(), Convert.ToInt32(txtAño.Text.Trim()), modeloV, idClienteFinal)
 
             lblMensaje.Text = "Vehículo guardado correctamente."
             lblMensaje.ForeColor = System.Drawing.Color.Green

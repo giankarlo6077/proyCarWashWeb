@@ -1,11 +1,13 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports System.Globalization
+Imports ServiceReference1
 
 Partial Class jdGestionarDescuento
     Inherits System.Web.UI.Page
 
-    Dim objDescuento As New clsDescuento()
-    Dim objTipoDescuento As New clsTipoDescuento()
+    ' Se instancian los clientes del Web Service
+    Dim objDescuento As New WebServiceSoapClient()
+    Dim objTipoDescuento As New WebServiceSoapClient()
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not Page.IsPostBack Then
@@ -24,7 +26,8 @@ Partial Class jdGestionarDescuento
     ' ================================================================
     Private Sub CargarComboTipo()
         Try
-            Dim dt As DataTable = objTipoDescuento.listar()
+            ' CORRECCIÓN APLICADA: Se llama al método listarTipoDescuento() de tu Web Service
+            Dim dt As DataTable = objTipoDescuento.listarTipoDescuento()
             cboTipoDescuento.DataSource = dt
             cboTipoDescuento.DataTextField = "tipoDescuento"
             cboTipoDescuento.DataValueField = "idTipoDescuento"
@@ -168,7 +171,6 @@ Partial Class jdGestionarDescuento
             Dim fechaIni As DateTime = Convert.ToDateTime(txtFechaInicio.Text)
             Dim fechaFin As DateTime = Convert.ToDateTime(txtFechaFin.Text)
 
-            ' Corrección: Usamos .SelectedValue para asegurar compatibilidad web
             objDescuento.registrar(Convert.ToInt32(hdnIdDescuento.Value), txtCodigo.Text, txtDescripcion.Text, v,
                                    Convert.ToInt32(cboTipoDescuento.SelectedValue), cboAplicaA.SelectedValue,
                                    fechaIni, fechaFin, chkActivo.Checked)
@@ -192,7 +194,8 @@ Partial Class jdGestionarDescuento
             Dim fechaIni As DateTime = Convert.ToDateTime(txtFechaInicio.Text)
             Dim fechaFin As DateTime = Convert.ToDateTime(txtFechaFin.Text)
 
-            objDescuento.modificar(Convert.ToInt32(hdnIdDescuento.Value), txtCodigo.Text, txtDescripcion.Text, v,
+            ' CORRECCIÓN APLICADA: Se llama al método modificarDescuento() de tu Web Service
+            objDescuento.modificarDescuento(Convert.ToInt32(hdnIdDescuento.Value), txtCodigo.Text, txtDescripcion.Text, v,
                                    Convert.ToInt32(cboTipoDescuento.SelectedValue), cboAplicaA.SelectedValue,
                                    fechaIni, fechaFin, chkActivo.Checked)
 
@@ -225,5 +228,4 @@ Partial Class jdGestionarDescuento
         MostrarExito("Formulario limpiado.")
         lblMensaje.ForeColor = System.Drawing.Color.Black
     End Sub
-
 End Class
