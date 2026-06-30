@@ -1,4 +1,4 @@
-﻿Imports capaNegocio
+﻿Imports ServiceReference1
 
 Partial Class jdInicioSesion
     Inherits System.Web.UI.Page
@@ -23,7 +23,7 @@ Partial Class jdInicioSesion
         End If
 
         Try
-            Dim objTrabajador As New clsTrabajador()
+            Dim objTrabajador As New WebServiceSoapClient()
 
             ' 1. Verificamos si el usuario está activo/vigente
             Dim estaVigente As Boolean = objTrabajador.ValidarVigencia(usuario)

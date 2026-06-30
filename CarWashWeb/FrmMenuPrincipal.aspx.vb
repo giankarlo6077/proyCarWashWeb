@@ -1,5 +1,5 @@
 ﻿Imports System.Globalization
-Imports capaNegocio
+Imports ServiceReference1
 
 Partial Class FrmMenuPrincipal
     Inherits System.Web.UI.Page
@@ -27,7 +27,7 @@ Partial Class FrmMenuPrincipal
 
     Private Sub CargarResumen()
         Try
-            Dim objDashboard As New clsDashboard()
+            Dim objDashboard As New WebServiceSoapClient()
 
             lblTotalVentasHoy.Text = objDashboard.totalVentasHoy().ToString("N2")
             lblCantidadVentasHoy.Text = objDashboard.cantidadVentasHoy().ToString()
