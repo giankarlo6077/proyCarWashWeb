@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/distribuidos/Proyecto Final/Proyecto Final 2/CarWashWeb/**)",
+      "Bash(B=\"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/distribuidos/Proyecto Final/Proyecto Final 2/CarWashWeb\" *)",
+      "Bash(cp __TRACKED_VAR__/capaDatos.dll ./CarWashWeb/Bin/capaDatos.dll)",
+      "Bash(cp __TRACKED_VAR__/capaNegocio.dll ./CarWashWeb/Bin/capaNegocio.dll)",
+      "Bash(python3 -c ' *)",
+      "Bash(powershell -c \"Get-ChildItem -Recurse 'D:\\\\USAT\\\\CICLO 2026-I\\\\SISTEMAS DISTRIBUIDOS\\\\ProCarWebService\\\\CarWashWeb\\\\App_WebReferences'\")",
+      "Bash(curl -s --max-time 20 \"http://wspruebacarwash2.somee.com/WSv1.asmx/listarTipoProducto\")",
+      "Bash(curl -s --max-time 20 \"http://wspruebacarwash2.somee.com/WSv1.asmx/listarTipoProductoCatalogo\")",
+      "Bash(find \"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/archivos\" -maxdepth 4 2>/dev/null)",
+      "Bash(find \"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/distribuidos/Proyecto Final/ProyectoWebServices/CarWashWeb\" -maxdepth 1 -iname \"JdVentas*\" 2>/dev/null)",
+      "Bash(python -c ' *)",
+      "Bash(command -v python3 python)",
+      "PowerShell(try { [xml]$x = Get-Content -Raw 'D:\\\\USAT\\\\CICLO 2026-I\\\\SISTEMAS DISTRIBUIDOS\\\\ProCarWebService\\\\CarWashWeb\\\\App_WebReferences\\\\com\\\\somee\\\\wspruebacarwash2\\\\WSv1.wsdl'; Write-Output \"OK: well-formed XML\" } catch { Write-Output \"ERROR: $\\($_.Exception.Message\\)\" })",
+      "Bash(curl -s --max-time 20 \"http://wspruebacarwash2.somee.com/WSv1.asmx?op=listarComprobantesPorTrabajador\")",
+      "Bash(curl -s --max-time 20 \"http://wspruebacarwash2.somee.com/WSv1.asmx\")",
+      "Bash(curl -sI --max-time 20 \"http://wspruebacarwash2.somee.com/WSv1.asmx\")",
+      "Bash(echo \"---exit:$?---\")",
+      "Read(//tmp/**)",
+      "Bash(curl -s --max-time 20 \"http://wspruebacarwash2.somee.com/WSv1.asmx\" -o /tmp/wsv1_page.html)",
+      "Read(//d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/**)",
+      "Bash(cp -r \"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/ProCarWebService/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\" \"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\")",
+      "Bash(echo \"exit:$?\")",
+      "Bash(mkdir -p \"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/packages\")",
+      "Bash(cp -r \"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/ProCarWebService/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\" \"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/packages/\")",
+      "Read(//d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1/build/**)",
+      "Bash(echo \"exit-aspx:$?\")",
+      "Bash(echo \"exit-vb:$?\")",
+      "Bash(xxd)",
+      "Bash(file \"/c/Users/ANGEL/AppData/Local/Temp/claude/D--USAT-CICLO-2026-I-SISTEMAS-DISTRIBUIDOS-ProCarWebService/4cab28a1-5a6a-418a-b69d-6e5ba62b9671/scratchpad/patch_wsdl_dashboard.ps1\")",
+      "Bash(cp \"/d/USAT/CICLO 2026-I/SISTEMAS DISTRIBUIDOS/ProCarWebService/CarWashWeb/App_WebReferences/com/somee/wspruebacarwash2/WSv1.wsdl\" \"/c/Users/ANGEL/AppData/Local/Temp/claude/D--USAT-CICLO-2026-I-SISTEMAS-DISTRIBUIDOS-ProCarWebService/4cab28a1-5a6a-418a-b69d-6e5ba62b9671/scratchpad/WSv1.wsdl.bak\" *)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\ANGEL\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--USAT-CICLO-2026-I-SISTEMAS-DISTRIBUIDOS-ProCarWebService\\\\4cab28a1-5a6a-418a-b69d-6e5ba62b9671\\\\scratchpad\\\\patch_wsdl_dashboard.ps1\")",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\ANGEL\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--USAT-CICLO-2026-I-SISTEMAS-DISTRIBUIDOS-ProCarWebService\\\\4cab28a1-5a6a-418a-b69d-6e5ba62b9671\\\\scratchpad\\\\patch_wsdl_existenumdoc.ps1\")"
+    ]
+  }
+}

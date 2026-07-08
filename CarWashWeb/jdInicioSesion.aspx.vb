@@ -1,4 +1,5 @@
-﻿Imports ServiceReference1
+﻿Imports System.Data
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdInicioSesion
     Inherits System.Web.UI.Page
@@ -23,7 +24,7 @@ Partial Class jdInicioSesion
         End If
 
         Try
-            Dim objTrabajador As New WebServiceSoapClient()
+            Dim objTrabajador As New WSv1
 
             ' 1. Verificamos si el usuario está activo/vigente
             Dim estaVigente As Boolean = objTrabajador.ValidarVigencia(usuario)
@@ -40,6 +41,16 @@ Partial Class jdInicioSesion
                 ' Login correcto -> Guardamos datos en sesión
                 Session("Usuario") = usuario
                 Session("NombreTrabajador") = nombreTrabajador
+
+                ' Guardamos el rol del trabajador para el control de permisos del menú
+                Dim dtRol As DataTable = objTrabajador.obtenerRolTrabajador(usuario)
+                If dtRol IsNot Nothing AndAlso dtRol.Rows.Count > 0 Then
+                    Session("IdRol") = dtRol.Rows(0)("idRol")
+                    Session("NombreRol") = dtRol.Rows(0)("rol").ToString()
+                Else
+                    Session("IdRol") = Nothing
+                    Session("NombreRol") = ""
+                End If
 
                 ' Redirigimos al menú principal
                 Response.Redirect("FrmMenuPrincipal.aspx")

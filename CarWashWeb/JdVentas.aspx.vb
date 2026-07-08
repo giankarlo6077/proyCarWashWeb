@@ -1,15 +1,13 @@
-﻿Imports System.Collections.Generic
+Imports System.Collections.Generic
 Imports System.Data
-Imports System.Data.SqlClient
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class JdVentas
     Inherits System.Web.UI.Page
 
-    Dim objVenta As New clsVenta()
-    Dim objCliente As New clsCliente()
-    Dim objComprobante As New clsComprobante()
-    Dim objProducto As New clsProducto()
+    Dim objCliente As New WSv1
+    Dim objComprobante As New WSv1
+    Dim objProducto As New WSv1
 
     ' Clave del carrito (detalle) en sesión
     Private Const KEY_DETALLE As String = "ventas_detalle"
@@ -24,8 +22,9 @@ Partial Class JdVentas
             Exit Sub
         End If
 
-        ' Búsqueda de cliente en vivo (filtrado del lado del cliente, sin postback)
+        ' Búsqueda en vivo (filtrado del lado del cliente, sin postback)
         txtCliente.Attributes("onkeyup") = "filtrarTabla(this, '" & dgvCliente.ClientID & "');"
+        txtBuscarComp.Attributes("onkeyup") = "filtrarTabla(this, '" & dgvComprobantes.ClientID & "');"
 
         If Not Page.IsPostBack Then
             Try
@@ -33,6 +32,7 @@ Partial Class JdVentas
                 CargarClientes()
                 AutocompletarCabecera()
                 BindDetalle()
+                ViewState("origenProducto") = "venta"
             Catch ex As Exception
                 MostrarMensaje(lblMensaje, "Error al cargar la página: " & ex.Message, False)
             End Try
@@ -98,9 +98,76 @@ Partial Class JdVentas
         ActualizarNumComprobante()
     End Sub
 
-    ' VOLVER AL MENÚ PRINCIPAL
+    ' VOLVER AL MENÚ PRINCIPAL (repone el stock de lo que quedó pendiente en el carrito)
     Protected Sub btnVolver_Click(ByVal sender As Object, ByVal e As EventArgs)
+        ReponerStockCarritoPendiente()
         Response.Redirect("FrmMenuPrincipal.aspx")
+    End Sub
+
+    '================================================================
+    ' COMPENSACIÓN DE STOCK (al quitar del carrito o abandonar la venta)
+    '================================================================
+    Private Sub ReponerStock(ByVal nombreProducto As String, ByVal cantidad As Integer)
+        Try
+            Dim idProd As Integer = objComprobante.obteneridProducto(nombreProducto)
+            If idProd > 0 AndAlso cantidad > 0 Then
+                objProducto.Aumentar_DisminuirStock(cantidad, idProd, "AUMENTAR")
+            End If
+        Catch
+            ' Best-effort: si falla la reposición no debe interrumpir el flujo del usuario
+        End Try
+    End Sub
+
+    Private Sub ReponerStockCarritoPendiente()
+        Try
+            For Each fila As DataRow In GetDetalle().Rows
+                ReponerStock(fila("producto").ToString(), Convert.ToInt32(fila("cantidad")))
+            Next
+            InicializarDetalle()
+        Catch
+        End Try
+    End Sub
+
+    '================================================================
+    ' VER MIS COMPROBANTES
+    '================================================================
+    Private Sub CargarComprobantes()
+        Dim idTrab As Integer = 0
+        Try
+            Dim nombreTrab As String = Convert.ToString(Session("NombreTrabajador"))
+            If Not String.IsNullOrWhiteSpace(nombreTrab) Then
+                idTrab = objComprobante.obteneridTrabajador(nombreTrab)
+            End If
+        Catch
+            idTrab = 0
+        End Try
+
+        Dim dt As DataTable = objComprobante.listarComprobantesPorTrabajador(idTrab)
+        dgvComprobantes.DataSource = dt
+        dgvComprobantes.DataBind()
+    End Sub
+
+    Protected Sub lnkVerComprobantes_Click(ByVal sender As Object, ByVal e As EventArgs)
+        Try
+            CargarComprobantes()
+            pnlModalComprobantes.Visible = True
+        Catch ex As Exception
+            MostrarMensaje(lblMensaje, "Error al cargar los comprobantes: " & ex.Message, False)
+        End Try
+    End Sub
+
+    Protected Sub btnCerrarComprobantes_Click(ByVal sender As Object, ByVal e As EventArgs)
+        pnlModalComprobantes.Visible = False
+    End Sub
+
+    Protected Sub btnRefrescarComp_Click(ByVal sender As Object, ByVal e As EventArgs)
+        Try
+            CargarComprobantes()
+            pnlModalComprobantes.Visible = True
+        Catch ex As Exception
+            pnlModalComprobantes.Visible = True
+            MostrarMensaje(lblMensaje, "Error al cargar los comprobantes: " & ex.Message, False)
+        End Try
     End Sub
 
     '================================================================
@@ -130,6 +197,7 @@ Partial Class JdVentas
     '================================================================
     Protected Sub btnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs)
         Try
+            ViewState("origenProducto") = "venta"
             CargarTiposProducto()
             CargarTodosLosProductos()
             lblMsgProducto.Visible = False
@@ -139,35 +207,66 @@ Partial Class JdVentas
         End Try
     End Sub
 
-    Protected Sub btnCerrarProducto_Click(ByVal sender As Object, ByVal e As EventArgs)
-        pnlModalProducto.Visible = False
+    ' Botón dentro del comprobante: agrega más productos, o -si ya se guardó- habilita edición
+    Protected Sub btnAccionComp_Click(ByVal sender As Object, ByVal e As EventArgs)
+        If Convert.ToBoolean(If(ViewState("compGuardado"), False)) Then
+            HabilitarEdicionComprobante()
+            pnlModalComprobante.Visible = True
+        Else
+            Try
+                ViewState("origenProducto") = "comprobante"
+                CargarTiposProducto()
+                CargarTodosLosProductos()
+                lblMsgProducto.Visible = False
+                pnlModalComprobante.Visible = True
+                pnlModalProducto.Visible = True
+            Catch ex As Exception
+                pnlModalComprobante.Visible = True
+                MostrarMensaje(lblMsgComp, "Error al abrir productos: " & ex.Message, False)
+            End Try
+        End If
     End Sub
 
-    ' Combo de tipos de producto (igual que el escritorio: consulta directa a la BD)
+    Private Sub HabilitarEdicionComprobante()
+        btnGuardarComp.Enabled = True
+        cboEstado.Enabled = True
+        cboMedioPago.Enabled = True
+        btnImprimir.Enabled = False
+        btnGuardarPdf.Enabled = False
+        btnAccionComp.Text = "➕ Agregar Producto"
+        ViewState("compGuardado") = False
+        AplicarEstadoMonto()
+        MostrarMensaje(lblMsgComp, "Comprobante en modo edición. Realice los cambios y vuelva a guardar.", True)
+    End Sub
+
+    Private Sub RefrescarComprobante()
+        rptDetalleComp.DataSource = GetDetalle()
+        rptDetalleComp.DataBind()
+        CalcularTotales()
+        pnlModalComprobante.Visible = True
+    End Sub
+
+    Protected Sub btnCerrarProducto_Click(ByVal sender As Object, ByVal e As EventArgs)
+        pnlModalProducto.Visible = False
+        If Convert.ToString(ViewState("origenProducto")) = "comprobante" Then
+            RefrescarComprobante()
+        End If
+    End Sub
+
+    ' Combo de tipos de producto (vía Web Service)
     Private Sub CargarTiposProducto()
-        Dim strSQL As String =
-            "SELECT idtipoproducto, tipoproducto FROM tipo_producto ORDER BY tipoproducto ASC"
+        Dim dt As DataTable = objProducto.listarTipoProductoCatalogo()
 
-        Dim objC As New capaDatos.clsConectaBD()
-        Try
-            objC.conectar()
-            Dim da As New SqlDataAdapter(strSQL, objC.miConexion)
-            Dim dt As New DataTable()
-            da.Fill(dt)
+        Dim filaTodos As DataRow = dt.NewRow()
+        filaTodos("idTipoProducto") = 0
+        filaTodos("TipoProducto") = "-- Todos --"
+        dt.Rows.InsertAt(filaTodos, 0)
 
-            Dim filaTodos As DataRow = dt.NewRow()
-            filaTodos("idtipoproducto") = 0
-            filaTodos("tipoproducto") = "-- Todos --"
-            dt.Rows.InsertAt(filaTodos, 0)
-
-            cboTipoProducto.DataSource = dt
-            cboTipoProducto.DataTextField = "tipoproducto"
-            cboTipoProducto.DataValueField = "idtipoproducto"
-            cboTipoProducto.DataBind()
-            cboTipoProducto.SelectedIndex = 0
-        Finally
-            objC.desconectar()
-        End Try
+        cboTipoProducto.DataSource = dt
+        cboTipoProducto.DataTextField = "TipoProducto"
+        cboTipoProducto.DataValueField = "idTipoProducto"
+        cboTipoProducto.DataBind()
+        cboTipoProducto.SelectedIndex = 0
     End Sub
 
     Private Sub CargarTodosLosProductos()
@@ -235,6 +334,11 @@ Partial Class JdVentas
             ' Refrescar grilla del modal respetando el filtro actual
             cboTipoProducto_SelectedIndexChanged(sender, e)
 
+            ' Si el producto se agregó desde el comprobante ya abierto, refrescarlo también
+            If Convert.ToString(ViewState("origenProducto")) = "comprobante" Then
+                RefrescarComprobante()
+            End If
+
             MostrarMensaje(lblMsgProducto, "'" & nombre & "' agregado a la venta.", True)
 
         Catch ex As Exception
@@ -263,8 +367,7 @@ Partial Class JdVentas
     End Sub
 
     '================================================================
-    ' QUITAR PRODUCTO DEL DETALLE
-    '   (faithful al escritorio: no repone el stock descontado)
+    ' QUITAR PRODUCTO DEL DETALLE (repone el stock descontado)
     '================================================================
     Protected Sub dgvDetalle_RowCommand(ByVal sender As Object, ByVal e As GridViewCommandEventArgs)
         If e.CommandName <> "Quitar" Then Exit Sub
@@ -273,6 +376,7 @@ Partial Class JdVentas
         Dim dt As DataTable = GetDetalle()
         For Each fila As DataRow In dt.Rows
             If fila("producto").ToString() = nombre Then
+                ReponerStock(nombre, Convert.ToInt32(fila("cantidad")))
                 fila.Delete()
                 Exit For
             End If
@@ -346,10 +450,14 @@ Partial Class JdVentas
         ' Totales
         CalcularTotales()
 
-        ' Estado inicial: botón imprimir bloqueado hasta guardar (igual que escritorio)
+        ' Estado inicial: botones de impresión/PDF bloqueados hasta guardar
         btnImprimir.Enabled = False
+        btnGuardarPdf.Enabled = False
+        btnGuardarComp.Enabled = True
+        btnAccionComp.Text = "➕ Agregar Producto"
         lblMsgComp.Visible = False
         ViewState("compGuardado") = False
+        ViewState("origenProducto") = "comprobante"
 
         pnlModalComprobante.Visible = True
     End Sub
@@ -475,16 +583,18 @@ Partial Class JdVentas
 
             objComprobante.transaccion(fecha, hora, txtNumeroVenta.Text, cboEstado.SelectedValue,
                                        tipoComprobante, 0, cboMedioPago.SelectedValue,
-                                       txtCompTrabajador.Text, txtCompCliente.Text, detalles)
+                                       txtCompTrabajador.Text, txtCompCliente.Text, detalles.ToArray())
 
             MostrarMensaje(lblMsgComp, "Comprobante registrado correctamente. Ya puede imprimirlo o guardarlo en PDF.", True)
 
-            ' Bloquear edición y habilitar impresión
+            ' Bloquear edición y habilitar impresión / PDF
             btnImprimir.Enabled = True
+            btnGuardarPdf.Enabled = True
             btnGuardarComp.Enabled = False
             cboEstado.Enabled = False
             cboMedioPago.Enabled = False
             txtMonto.Enabled = False
+            btnAccionComp.Text = "✏️ Editar Comprobante"
             ViewState("compGuardado") = True
 
         Catch ex As Exception
@@ -518,7 +628,9 @@ Partial Class JdVentas
         btnGuardarComp.Enabled = True
         cboEstado.Enabled = True
         cboMedioPago.Enabled = True
+        btnAccionComp.Text = "➕ Agregar Producto"
         ViewState("compGuardado") = False
+        ViewState("origenProducto") = "venta"
     End Sub
 
     '================================================================

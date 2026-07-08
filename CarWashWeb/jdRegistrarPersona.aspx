@@ -244,6 +244,10 @@
 
     <div class="rp-wrapper">
 
+        <div style="margin-bottom:14px;">
+            <asp:Button ID="btnVolver" runat="server" Text="← Volver" CssClass="btn-outline" CausesValidation="false" />
+        </div>
+
         <div class="rp-header">
             <h1>Registrar Nuevo Cliente</h1>
             <div class="rp-header-meta">

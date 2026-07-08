@@ -1,10 +1,10 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarUsuario
     Inherits System.Web.UI.Page
 
-    Dim objTrabajador As New clsTrabajador()
+    Dim objTrabajador As New WSv1
 
     '================================================================
     ' AL CARGAR EL FORMULARIO
@@ -15,6 +15,7 @@ Partial Class jdGestionarUsuario
             Response.Redirect("jdInicioSesion.aspx")
             Exit Sub
         End If
+        Seguridad.ExigirAdministrador(Me)
 
         If Not Page.IsPostBack Then
             Try
@@ -31,7 +32,7 @@ Partial Class jdGestionarUsuario
     ' MÉTODOS DE APOYO
     '================================================================
     Private Sub CargarTablaUsuarios(Optional ByVal filtro As String = "")
-        dgvUsuarios.DataSource = objTrabajador.ListarUsuariosGrid(filtro)
+        dgvUsuarios.DataSource = If(filtro = "", objTrabajador.ListarUsuariosGrid(), objTrabajador.BuscarUsuariosGrid(filtro))
         dgvUsuarios.DataBind()
     End Sub
 
@@ -41,7 +42,7 @@ Partial Class jdGestionarUsuario
         txtUsuario.Text = ""
         txtContrasena.Text = ""
         txtConfirmarContrasena.Text = ""
-        txtPregunta.Text = ""
+        ddlPregunta.SelectedIndex = 0
         txtRespuesta.Text = ""
         chkActivo.Checked = True
     End Sub
@@ -74,8 +75,8 @@ Partial Class jdGestionarUsuario
             Exit Sub
         End If
 
-        If txtPregunta.Text.Trim() = "" Then
-            MostrarError("Debe ingresar una pregunta de seguridad.")
+        If ddlPregunta.SelectedValue = "" Then
+            MostrarError("Debe seleccionar una pregunta de seguridad.")
             Exit Sub
         End If
 
@@ -90,7 +91,7 @@ Partial Class jdGestionarUsuario
         End If
 
         Try
-            Dim preguntaStr As String = txtPregunta.Text.Trim()
+            Dim preguntaStr As String = ddlPregunta.SelectedValue
 
             objTrabajador.GuardarCredenciales(idTrabajadorSeleccionado, txtUsuario.Text.Trim(), txtContrasena.Text, preguntaStr, txtRespuesta.Text.Trim(), chkActivo.Checked)
 
@@ -145,14 +146,14 @@ Partial Class jdGestionarUsuario
                 txtConfirmarContrasena.Text = ""
                 txtRespuesta.Text = ""
 
-                ' La pregunta SÍ se muestra, consultándola directo de la BD
+                ' La pregunta actual se preselecciona en el combo, consultándola directo de la BD
                 Try
-                    txtPregunta.Text = objTrabajador.PreguntaRecuperarContra(txtUsuario.Text.Trim())
-
-                    txtPregunta.ReadOnly = True
+                    Dim preguntaActual As String = objTrabajador.PreguntaRecuperarContra(txtUsuario.Text.Trim())
+                    Dim item As ListItem = ddlPregunta.Items.FindByValue(preguntaActual)
+                    ddlPregunta.SelectedIndex = If(item IsNot Nothing, ddlPregunta.Items.IndexOf(item), 0)
 
                 Catch ex As Exception
-                    txtPregunta.Text = ""
+                    ddlPregunta.SelectedIndex = 0
                 End Try
 
                 lblMensaje.Text = ""

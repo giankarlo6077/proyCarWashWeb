@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="JdVentas.aspx.vb" Inherits="JdVentas" %>
+<%@ Page Title="" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="JdVentas.aspx.vb" Inherits="JdVentas" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
@@ -89,6 +89,13 @@
         .btn-azul:hover { background-color: #374151; }
         .btn-verde { background-color: #059669; }
         .btn-verde:hover { background-color: #047857; }
+
+        /* Enlace de texto "Ver mis comprobantes" */
+        .link-comprobantes {
+            color: #1F2937; font-weight: bold; font-size: 10pt;
+            text-decoration: underline; cursor: pointer;
+        }
+        .link-comprobantes:hover { color: #2563EB; }
         .btn-rojo { background-color: #DC2626; }
         .btn-rojo:hover { background-color: #B91C1C; }
         .btn-gris { background-color: #6B7280; }
@@ -102,6 +109,12 @@
         .acciones-detalle {
             display: flex; justify-content: space-between; align-items: center;
             margin-top: 16px; flex-wrap: wrap; gap: 12px;
+        }
+
+        /* Pie del comprobante: botones agrupados (no separados a los extremos) */
+        .acciones-comp {
+            display: flex; justify-content: flex-end; align-items: center;
+            margin-top: 16px; flex-wrap: wrap; gap: 8px;
         }
 
         .total-box {
@@ -177,6 +190,8 @@
             .no-print { display: none !important; }
         }
     </style>
+    <%-- Librería para generar y descargar el PDF del comprobante --%>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -279,7 +294,8 @@
 
         <div class="acciones-detalle">
             <asp:Button ID="btnGenerar" runat="server" Text="GENERAR COMPROBANTE" CssClass="btn btn-azul"
-                OnClick="btnGenerar_Click" CausesValidation="false" style="padding:12px 26px;" />
+                OnClick="btnGenerar_Click" CausesValidation="false" style="padding:12px 26px;"
+                OnClientClick="return pedirConfirmacion(this, '¿Desea generar el comprobante?');" />
             <div class="total-box">
                 <span>TOTAL:</span>
                 <asp:TextBox ID="txtTotal" runat="server" CssClass="form-control" ReadOnly="true" Text="0.00"></asp:TextBox>
@@ -287,10 +303,63 @@
         </div>
     </div>
 
+    <%-- ===== ENLACE: VER MIS COMPROBANTES (abre el modal) ===== --%>
+    <div style="margin-top:18px;text-align:right;">
+        <asp:LinkButton ID="lnkVerComprobantes" runat="server" CssClass="link-comprobantes"
+            OnClick="lnkVerComprobantes_Click" CausesValidation="false">📄 Ver mis comprobantes</asp:LinkButton>
+    </div>
+
+    <%-- ============================================================ --%>
+    <%--  MODAL: Mis comprobantes guardados                           --%>
+    <%-- ============================================================ --%>
+    <asp:Panel ID="pnlModalComprobantes" runat="server" CssClass="modal-overlay" Visible="false">
+        <div class="modal-box ancho">
+            <div class="modal-header">
+                <span>Mis comprobantes</span>
+                <asp:Button ID="btnCerrarComprobantes" runat="server" Text="✕" CssClass="btn-mini btn-rojo"
+                    OnClick="btnCerrarComprobantes_Click" CausesValidation="false" />
+            </div>
+            <div class="modal-body">
+
+                <div class="fila-buscar" style="margin-bottom:12px;">
+                    <asp:TextBox ID="txtBuscarComp" runat="server" CssClass="form-control"
+                        placeholder="🔍 Buscar por N°, cliente, tipo, estado..."></asp:TextBox>
+                    <asp:Button ID="btnRefrescarComp" runat="server" Text="🔄 Actualizar" CssClass="btn btn-azul"
+                        OnClick="btnRefrescarComp_Click" CausesValidation="false" />
+                </div>
+
+                <div class="scroll-260">
+                    <asp:GridView ID="dgvComprobantes" runat="server" AutoGenerateColumns="false"
+                        CssClass="grid" GridLines="None" Width="100%">
+                        <Columns>
+                            <asp:BoundField DataField="numcomprobante" HeaderText="N° Comprobante" />
+                            <asp:BoundField DataField="tipocomprobante" HeaderText="Tipo" />
+                            <asp:BoundField DataField="fechaemision" HeaderText="Fecha" DataFormatString="{0:yyyy-MM-dd}" HtmlEncode="false" />
+                            <asp:BoundField DataField="horaemision" HeaderText="Hora" />
+                            <asp:BoundField DataField="cliente" HeaderText="Cliente" />
+                            <asp:BoundField DataField="mediopago" HeaderText="Medio de Pago" />
+                            <asp:BoundField DataField="estado" HeaderText="Estado" />
+                            <asp:BoundField DataField="total" HeaderText="Total (S/)" DataFormatString="{0:N2}" ItemStyle-HorizontalAlign="Right" />
+                        </Columns>
+                        <EmptyDataTemplate>
+                            <div style="padding:18px;text-align:center;color:#6B7280;">Aún no tiene comprobantes guardados.</div>
+                        </EmptyDataTemplate>
+                    </asp:GridView>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+                    <asp:Button ID="btnCerrarComprobantes2" runat="server" Text="Cerrar" CssClass="btn btn-azul"
+                        OnClick="btnCerrarComprobantes_Click" CausesValidation="false" />
+                </div>
+
+            </div>
+        </div>
+    </asp:Panel>
+
     <%-- ============================================================ --%>
     <%--  MODAL 1: JdSeleccionarProductoVenta                         --%>
     <%-- ============================================================ --%>
-    <asp:Panel ID="pnlModalProducto" runat="server" CssClass="modal-overlay" Visible="false">
+    <asp:Panel ID="pnlModalProducto" runat="server" CssClass="modal-overlay" Visible="false" style="z-index:1050;">
         <div class="modal-box ancho">
             <div class="modal-header">
                 <span>Seleccionar Productos</span>
@@ -428,23 +497,68 @@
                         <asp:TextBox ID="txtVuelto" runat="server" CssClass="form-control" ReadOnly="true" Text="0.00"></asp:TextBox></div>
                 </div>
 
-                <div class="acciones-detalle no-print">
+                <div class="acciones-comp no-print">
+                    <asp:Button ID="btnAccionComp" runat="server" Text="➕ Agregar Producto" CssClass="btn btn-verde"
+                        OnClick="btnAccionComp_Click" CausesValidation="false" />
                     <asp:Button ID="btnGuardarComp" runat="server" Text="Guardar Comprobante" CssClass="btn btn-verde"
-                        OnClick="btnGuardarComp_Click" CausesValidation="false" />
-                    <asp:Button ID="btnImprimir" runat="server" Text="🖨 Imprimir / Guardar PDF" CssClass="btn btn-azul"
+                        OnClick="btnGuardarComp_Click" CausesValidation="false"
+                        OnClientClick="return pedirConfirmacion(this, '¿Desea guardar el comprobante?');" />
+                    <asp:Button ID="btnImprimir" runat="server" Text="🖨 Imprimir" CssClass="btn btn-azul"
                         Enabled="false" OnClientClick="imprimirComprobante(); return false;" CausesValidation="false" />
+                    <asp:Button ID="btnGuardarPdf" runat="server" Text="📄 Guardar PDF" CssClass="btn btn-azul"
+                        Enabled="false" OnClientClick="guardarComprobantePdf(); return false;" CausesValidation="false" />
                 </div>
 
             </div>
         </div>
     </asp:Panel>
 
+    <%-- ============================================================ --%>
+    <%--  MODAL DE CONFIRMACIÓN (en la misma página)                  --%>
+    <%-- ============================================================ --%>
+    <div id="modalConfirm" class="modal-overlay" style="display:none; z-index:1100;">
+        <div class="modal-box" style="width:380px; max-width:92%;">
+            <div style="padding:22px 24px; font-size:11pt; color:#111827;">
+                <span id="confirmMensaje">¿Está seguro?</span>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:8px; padding:0 24px 20px;">
+                <button type="button" class="btn btn-rojo" onclick="_confirmCancelar();">Cancelar</button>
+                <button type="button" class="btn btn-verde" onclick="_confirmAceptar();">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
-        // Imprime SOLO el comprobante en una ventana nueva aislada
-        // (evita las páginas duplicadas que produce el modal con position:fixed)
-        function imprimirComprobante() {
+        var _confirmConfirmado = false;
+        var _confirmBtnId = null;
+
+        function pedirConfirmacion(btn, mensaje) {
+            if (_confirmConfirmado) {
+                _confirmConfirmado = false;
+                return true;
+            }
+            _confirmBtnId = btn.id;
+            document.getElementById('confirmMensaje').textContent = mensaje;
+            document.getElementById('modalConfirm').style.display = 'flex';
+            return false;
+        }
+
+        function _confirmAceptar() {
+            document.getElementById('modalConfirm').style.display = 'none';
+            _confirmConfirmado = true;
+            var btn = document.getElementById(_confirmBtnId);
+            if (btn) btn.click();
+        }
+
+        function _confirmCancelar() {
+            document.getElementById('modalConfirm').style.display = 'none';
+            _confirmConfirmado = false;
+            _confirmBtnId = null;
+        }
+
+        function _abrirVentanaComprobante(titulo) {
             var area = document.getElementById('areaImpresion');
-            if (!area) return;
+            if (!area) return null;
             var contenido = area.innerHTML;
             var estilos =
                 '<style>' +
@@ -465,23 +579,53 @@
                 '</style>';
             var v = window.open('', '_blank', 'width=820,height=700');
             if (!v) {
-                alert('Permite las ventanas emergentes para imprimir el comprobante.');
-                return;
+                alert('Permite las ventanas emergentes para continuar con el comprobante.');
+                return null;
             }
-            v.document.write('<html><head><title>Comprobante</title>' + estilos + '</head><body>' + contenido + '</body></html>');
+            v.document.write('<html><head><title>' + titulo + '</title>' + estilos + '</head><body>' + contenido + '</body></html>');
             v.document.close();
             v.focus();
+            return v;
+        }
+
+        function imprimirComprobante() {
+            var v = _abrirVentanaComprobante('Comprobante');
+            if (!v) return;
             setTimeout(function () { v.print(); v.close(); }, 350);
         }
 
-        // Filtra las filas de una tabla en vivo (mientras se escribe)
+        function guardarComprobantePdf() {
+            var area = document.getElementById('areaImpresion');
+            if (!area) return;
+
+            var num = document.getElementById('<%= lblNumComp.ClientID %>');
+            var nombre = 'Comprobante';
+            if (num && num.textContent.trim() !== '') {
+                nombre += '_' + num.textContent.trim().replace(/[^\w\-]+/g, '_');
+            }
+
+            if (typeof html2pdf === 'undefined') {
+                alert('No se pudo cargar el generador de PDF. Verifica tu conexión a internet.');
+                return;
+            }
+
+            var opciones = {
+                margin: 10,
+                filename: nombre + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opciones).from(area).save();
+        }
+
         function filtrarTabla(input, idTabla) {
             var filtro = input.value.toLowerCase();
             var tabla = document.getElementById(idTabla);
             if (!tabla) return;
             var filas = tabla.rows;
             for (var i = 0; i < filas.length; i++) {
-                if (filas[i].getElementsByTagName('th').length > 0) continue; // cabecera
+                if (filas[i].getElementsByTagName('th').length > 0) continue;
                 var texto = (filas[i].innerText || filas[i].textContent || "").toLowerCase();
                 filas[i].style.display = (texto.indexOf(filtro) > -1) ? "" : "none";
             }

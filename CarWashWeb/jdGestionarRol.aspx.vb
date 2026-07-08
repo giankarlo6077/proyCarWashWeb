@@ -1,10 +1,12 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Public Class jdGestionarRol
     Inherits System.Web.UI.Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Seguridad.ExigirAdministrador(Me)
+
         If Not IsPostBack Then
             cargarListView()
             desactivarControles()
@@ -33,7 +35,7 @@ Public Class jdGestionarRol
     ' GENERAR ID DE PREVISUALIZACIÓN
     ' =============================================
     Private Sub cargarIdRol()
-        Dim objRol As New clsRol()
+        Dim objRol As New WSv1
         Try
             txtIdRol.Text = objRol.generarIdRol().ToString()
         Catch ex As Exception
@@ -45,7 +47,7 @@ Public Class jdGestionarRol
     ' LISTADO DE ROLES
     ' =============================================
     Private Sub cargarListView()
-        Dim objRol As New clsRol()
+        Dim objRol As New WSv1
         Try
             Dim dt As DataTable = objRol.listarRoles()
             gvRoles.DataSource = dt
@@ -95,7 +97,7 @@ Public Class jdGestionarRol
             Exit Sub
         End If
 
-        Dim objRol As New clsRol()
+        Dim objRol As New WSv1
         Dim estado As Boolean = Convert.ToBoolean(cboEstado.SelectedValue)
 
         Try

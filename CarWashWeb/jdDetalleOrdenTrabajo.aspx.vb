@@ -1,10 +1,10 @@
 ﻿Imports System.Data
 Imports System.Globalization
-Imports ServiceReference1
+Imports com.somee.wspruebacarwash2
 Partial Class jdDetalleOrdenTrabajo
     Inherits System.Web.UI.Page
 
-    Dim objCita As New WebServiceSoapClient
+    Dim objCita As New WSv1
     Private _idCita As Integer
 
     ' ─── PROPIEDADES DE SESSION ──────────────────────────────────────────
@@ -66,16 +66,14 @@ Partial Class jdDetalleOrdenTrabajo
 
     ' ─── CARGA DE DATOS ──────────────────────────────────────────────────
     Private Sub CargarDatosCita()
-        Dim dt As DataTable = objCita.cargarDatosCita(_idCita)  ' ahora es DataTable
+        Dim dt As DataTable = objCita.cargarDatosCita(_idCita)
 
         If dt Is Nothing OrElse dt.Rows.Count = 0 Then
             MostrarMensaje("⚠ No se encontró la cita.", "red")
             Return
         End If
 
-        ' Tomas la primera fila del DataTable
         Dim fila As DataRow = dt.Rows(0)
-
         lblidCita.Text = fila("idCita").ToString()
         lblFecha.Text = CDate(fila("fecha")).ToString("dd/MM/yyyy")
         lblHora.Text = fila("hora").ToString()
@@ -84,14 +82,20 @@ Partial Class jdDetalleOrdenTrabajo
         lblAno.Text = fila("anoFabricacion").ToString()
         lblCliente.Text = fila("cliente").ToString()
         lblTelefono.Text = fila("telefono").ToString()
-
         txtComentario.Text = fila("comentario").ToString()
         dtpFechaRecojo.Text = CDate(fila("fechaRecojo")).ToString("yyyy-MM-dd")
 
         Dim itemEstado = cmbEstado.Items.FindByValue(fila("estado").ToString())
         If itemEstado IsNot Nothing Then itemEstado.Selected = True
 
-        dtServicios = objCita.cargarServiciosdelaCita(_idCita)
+        ' Si vienen servicios pre-seleccionados desde GestionarCitas, usarlos
+        If Session("dtServiciosNuevaCita") IsNot Nothing Then
+            dtServicios = CType(Session("dtServiciosNuevaCita"), DataTable)
+            Session.Remove("dtServiciosNuevaCita")
+        Else
+            dtServicios = objCita.cargarServiciosdelaCita(_idCita)
+        End If
+
         dtProductos = objCita.cargarProductosdelaCita(_idCita)
     End Sub
 
@@ -120,7 +124,7 @@ Partial Class jdDetalleOrdenTrabajo
 
     ' ─── MODAL SERVICIOS ─────────────────────────────────────────────────
     Protected Sub btnAgregarServicio_Click(sender As Object, e As EventArgs)
-        dgvSelecServicios.DataSource = objCita.listarServiciosCita()
+        dgvSelecServicios.DataSource = objCita.listarServicios()
         dgvSelecServicios.DataBind()
         hdnMostrarModalServicio.Value = "1"
     End Sub
@@ -151,7 +155,7 @@ Partial Class jdDetalleOrdenTrabajo
             End If
 
             ' Obtener nombre del servicio
-            Dim dt As DataTable = objCita.listarServiciosCita()
+            Dim dt As DataTable = objCita.listarServicios()
             Dim filaServ = dt.AsEnumerable().FirstOrDefault(Function(r) CInt(r("idServicio")) = idServicio)
 
             Dim dr As DataRow = dtServicios.NewRow()
@@ -171,7 +175,7 @@ Partial Class jdDetalleOrdenTrabajo
 
     ' ─── MODAL PRODUCTOS ─────────────────────────────────────────────────
     Protected Sub btnAgregarProducto_Click(sender As Object, e As EventArgs)
-        dgvSelecProductos.DataSource = objCita.listarProductosCita()
+        dgvSelecProductos.DataSource = objCita.listarProductos()
         dgvSelecProductos.DataBind()
         hdnMostrarModalProducto.Value = "1"
     End Sub
@@ -180,7 +184,7 @@ Partial Class jdDetalleOrdenTrabajo
         If e.CommandName = "ElegirProducto" Then
             Dim idProducto As Integer = CInt(e.CommandArgument)
 
-            Dim dt As DataTable = objCita.listarProductosCita()
+            Dim dt As DataTable = objCita.listarProductos()
             Dim filaProd = dt.AsEnumerable().FirstOrDefault(Function(r) CInt(r("idProducto")) = idProducto)
 
             If filaProd Is Nothing Then Return
@@ -266,10 +270,19 @@ Partial Class jdDetalleOrdenTrabajo
                 objCita.registrarProductoparaCita(cantidadTotal, precio, _idCita, idProducto)
             Next
 
-            ' Limpiar session y volver
+            ' ─── MENSAJE SEGÚN SI SE AGREGARON SERVICIOS ─────────────────
+            Dim tieneSerivicios As Boolean = dtServicios.Rows.Count > 0
+
             Session.Remove("dtServicios")
             Session.Remove("dtProductos")
-            Response.Redirect("jdGestionarCitas.aspx")
+
+            If tieneSerivicios Then
+                ' Redirigir con mensaje de éxito
+                Response.Redirect("jdGestionarCitas.aspx?msg=ok")
+            Else
+                ' Redirigir con mensaje de advertencia
+                Response.Redirect("jdGestionarCitas.aspx?msg=sinservicio")
+            End If
 
         Catch ex As Exception
             MostrarMensaje("❌ Error: " & ex.Message, "red")

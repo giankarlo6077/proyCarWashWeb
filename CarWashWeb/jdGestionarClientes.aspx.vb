@@ -1,10 +1,12 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Public Class jdGestionarClientes
     Inherits System.Web.UI.Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Seguridad.ExigirAdministrador(Me)
+
         If Not IsPostBack Then
             cargarTiposDocumento()
             ocultarMensaje()
@@ -34,7 +36,7 @@ Public Class jdGestionarClientes
             Exit Sub
         End If
 
-        Dim objPersona As New clsPersona()
+        Dim objPersona As New WSv1
         Try
             Dim dt As DataTable = objPersona.buscarPersonaRapida(txtDoc.Text.Trim())
 
@@ -63,7 +65,7 @@ Public Class jdGestionarClientes
             Exit Sub
         End If
 
-        Dim objEmpresa As New clsEmpresa()
+        Dim objEmpresa As New WSv1
         Try
             Dim dt As DataTable = objEmpresa.buscarEmpresaRUC(txtRUC.Text.Trim())
 

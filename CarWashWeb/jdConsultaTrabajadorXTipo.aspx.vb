@@ -1,12 +1,12 @@
 Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdConsultaTrabajadorXTipo
     Inherits System.Web.UI.Page
 
-    ' Instancias globales de conexión a tus clases de negocio referenciadas
-    Dim objReporte As New clsReporteTrabajador()
-    Dim objTipoTrabajador As New clsTipoTrabajador()
+    ' Instancias globales de conexión al Web Service
+    Dim objReporte As New WSv1
+    Dim objTipoTrabajador As New WSv1
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         ' Proteger la sesión de la plataforma Car Wash Web

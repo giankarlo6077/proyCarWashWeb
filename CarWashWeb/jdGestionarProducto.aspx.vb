@@ -1,12 +1,12 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarProducto
     Inherits System.Web.UI.Page
 
-    Dim objProducto As New clsProducto()
-    Dim objMarca As New clsMarca()
-    Dim objTipo As New clsTipoProducto()
+    Dim objProducto As New WSv1
+    Dim objMarca As New WSv1
+    Dim objTipo As New WSv1
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Session("Usuario") Is Nothing Then
@@ -40,9 +40,9 @@ Partial Class jdGestionarProducto
             cboMarcaProducto.Items.Insert(0, New ListItem("-- Seleccione --", ""))
 
             ' Tipos
-            cboTipoProducto.DataSource = objTipo.listarTipoProducto()
-            cboTipoProducto.DataTextField = "tipoproducto"
-            cboTipoProducto.DataValueField = "idtipoproducto"
+            cboTipoProducto.DataSource = objTipo.listarTipoProductoCatalogo()
+            cboTipoProducto.DataTextField = "TipoProducto"
+            cboTipoProducto.DataValueField = "idTipoProducto"
             cboTipoProducto.DataBind()
             cboTipoProducto.Items.Insert(0, New ListItem("-- Seleccione --", ""))
         Catch ex As Exception
@@ -88,7 +88,8 @@ Partial Class jdGestionarProducto
         Select Case e.CommandName
             Case "Editar"
                 Try
-                    Dim fila As DataRow = objProducto.buscarXid(id)
+                    Dim dtProducto As DataTable = objProducto.buscarXidProducto(id)
+                    Dim fila As DataRow = If(dtProducto IsNot Nothing AndAlso dtProducto.Rows.Count > 0, dtProducto.Rows(0), Nothing)
                     If fila IsNot Nothing Then
                         hdnModo.Value = "editar"
                         txtId.Text = id.ToString()

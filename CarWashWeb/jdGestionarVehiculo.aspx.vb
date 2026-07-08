@@ -1,15 +1,17 @@
 ﻿Imports System.Data
 Imports System.Collections.Generic
-Imports ServiceReference1
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarVehiculo
     Inherits System.Web.UI.Page
 
     ' Se reemplazan las clases locales por el cliente del Web Service
-    Dim objVehiculo As New WebServiceSoapClient()
-    Dim objModeloVehiculo As New WebServiceSoapClient()
+    Dim objVehiculo As New WSv1
+    Dim objModeloVehiculo As New WSv1
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        Seguridad.ExigirAdministrador(Me)
+
         If Not Page.IsPostBack Then
             Listar()
             CargarCombo()

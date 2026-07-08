@@ -1,10 +1,10 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class JdMantenimientoProveedor
     Inherits System.Web.UI.Page
 
-    Dim objProveedor As New clsProveedor()
+    Dim objProveedor As New WSv1
 
     '================================================================
     ' CARGA DEL FORMULARIO
@@ -16,6 +16,7 @@ Partial Class JdMantenimientoProveedor
             Response.Redirect("jdInicioSesion.aspx")
             Exit Sub
         End If
+        Seguridad.ExigirAdministrador(Me)
 
         ' Búsqueda en vivo (filtrado del lado del cliente, sin postback)
         txtBuscar.Attributes("onkeyup") = "filtrarTabla(this, '" & dgvProveedores.ClientID & "');"
@@ -60,8 +61,6 @@ Partial Class JdMantenimientoProveedor
         Select Case e.CommandName
             Case "Editar"
                 AbrirModalEditar(idProveedor)
-            Case "Baja"
-                DarDeBaja(idProveedor)
         End Select
     End Sub
 
@@ -70,11 +69,12 @@ Partial Class JdMantenimientoProveedor
     '================================================================
     Private Sub AbrirModalEditar(ByVal idProveedor As Integer)
         Try
-            Dim fila As DataRow = objProveedor.buscarXid(idProveedor)
-            If fila Is Nothing Then
+            Dim dt As DataTable = objProveedor.buscarXidProveedor(idProveedor)
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
                 MostrarMensaje("No se encontró el proveedor seleccionado.", False)
                 Exit Sub
             End If
+            Dim fila As DataRow = dt.Rows(0)
 
             hdnIdProveedor.Value = idProveedor.ToString()
             txtNombre.Text = fila("proveedor").ToString()
@@ -150,42 +150,6 @@ Partial Class JdMantenimientoProveedor
     '================================================================
     Protected Sub btnCancelarModal_Click(ByVal sender As Object, ByVal e As EventArgs)
         pnlModal.Visible = False
-    End Sub
-
-    '================================================================
-    ' DAR DE BAJA (baja lógica: estado = False)
-    '   La confirmación YesNo del escritorio se hace con confirm()
-    '   en el OnClientClick del botón de la grilla.
-    '================================================================
-    Private Sub DarDeBaja(ByVal idProveedor As Integer)
-        Try
-            Dim fila As DataRow = objProveedor.buscarXid(idProveedor)
-            If fila Is Nothing Then
-                MostrarMensaje("No se encontró el proveedor seleccionado.", False)
-                Exit Sub
-            End If
-
-            If fila("estado").ToString() = "Inactivo" Then
-                MostrarMensaje("El proveedor ya se encuentra inactivo.", False)
-                Exit Sub
-            End If
-
-            objProveedor.modificarProveedor(
-                idProveedor,
-                fila("proveedor").ToString(),
-                fila("ruc").ToString(),
-                fila("telefono").ToString(),
-                fila("correo").ToString(),
-                fila("direccion").ToString(),
-                fila("contacto").ToString(),
-                False)
-
-            CargarGrilla()
-            MostrarMensaje("Proveedor '" & fila("proveedor").ToString() & "' dado de baja correctamente.", True)
-
-        Catch ex As Exception
-            MostrarMensaje("Error al dar de baja: " & ex.Message, False)
-        End Try
     End Sub
 
     '================================================================

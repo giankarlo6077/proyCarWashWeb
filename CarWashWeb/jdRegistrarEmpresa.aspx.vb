@@ -1,5 +1,5 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Public Class jdRegistrarEmpresa
     Inherits System.Web.UI.Page
@@ -15,7 +15,7 @@ Public Class jdRegistrarEmpresa
     ' CARGA UBIGEO
     ' =============================================
     Private Sub cargarDepartamentos()
-        Dim objCliente As New clsCliente()
+        Dim objCliente As New WSv1
         Try
             Dim dt As DataTable = objCliente.listarDepartamentos()
             cboDepartamento.DataSource = dt
@@ -37,7 +37,7 @@ Public Class jdRegistrarEmpresa
 
         If cboDepartamento.SelectedValue = "" Then Exit Sub
 
-        Dim objCliente As New clsCliente()
+        Dim objCliente As New WSv1
         Try
             Dim idDepto As Integer = Convert.ToInt32(cboDepartamento.SelectedValue)
             Dim dt As DataTable = objCliente.listarProvincias(idDepto)
@@ -56,7 +56,7 @@ Public Class jdRegistrarEmpresa
 
         If cboProvincia.SelectedValue = "" Then Exit Sub
 
-        Dim objCliente As New clsCliente()
+        Dim objCliente As New WSv1
         Try
             Dim idProv As Integer = Convert.ToInt32(cboProvincia.SelectedValue)
             Dim dt As DataTable = objCliente.listarDistritos(idProv)
@@ -96,8 +96,19 @@ Public Class jdRegistrarEmpresa
             Exit Sub
         End If
 
-        Dim objCliente As New clsCliente()
-        Dim objEmpresa As New clsEmpresa()
+        Dim objCliente As New WSv1
+        Dim objEmpresa As New WSv1
+
+        Try
+            If objCliente.existeNumDocumento(txtRUC.Text.Trim()) Then
+                mostrarMensaje("Ya existe un cliente registrado con ese RUC.", "alert-warning")
+                Exit Sub
+            End If
+        Catch ex As Exception
+            mostrarMensaje("Error al verificar el RUC: " & ex.Message, "alert-danger")
+            Exit Sub
+        End Try
+
         Try
             ' 1. Insertar en CLIENTE y obtener el ID generado
             Dim idCliente As Integer = objCliente.registrarClienteEmpresa(
@@ -124,9 +135,17 @@ Public Class jdRegistrarEmpresa
     End Sub
 
     ' =============================================
-    ' BOTÓN CANCELAR
+    ' BOTÓN CANCELAR (limpia el formulario, se queda en la página)
     ' =============================================
     Protected Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
+        limpiarCampos()
+        ocultarMensaje()
+    End Sub
+
+    ' =============================================
+    ' BOTÓN VOLVER
+    ' =============================================
+    Protected Sub btnVolver_Click(sender As Object, e As EventArgs) Handles btnVolver.Click
         Response.Redirect("~/jdGestionarClientes.aspx", False)
     End Sub
 

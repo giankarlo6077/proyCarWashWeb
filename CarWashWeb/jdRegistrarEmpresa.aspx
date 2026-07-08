@@ -140,6 +140,10 @@
 
     <div class="re-wrapper">
 
+        <div style="margin-bottom:14px;">
+            <asp:Button ID="btnVolver" runat="server" Text="← Volver" CssClass="btn-outline" CausesValidation="false" />
+        </div>
+
         <div class="re-header">
             <h1>Registrar Nueva Empresa</h1>
         </div>

@@ -1,15 +1,17 @@
 ﻿Imports System.Data
 Imports System.Globalization
-Imports ServiceReference1
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarDescuento
     Inherits System.Web.UI.Page
 
     ' Se instancian los clientes del Web Service
-    Dim objDescuento As New WebServiceSoapClient()
-    Dim objTipoDescuento As New WebServiceSoapClient()
+    Dim objDescuento As New WSv1
+    Dim objTipoDescuento As New WSv1
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        Seguridad.ExigirAdministrador(Me)
+
         If Not Page.IsPostBack Then
             Try
                 CargarComboTipo()

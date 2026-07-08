@@ -1,16 +1,17 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarTipoProducto
     Inherits System.Web.UI.Page
 
-    Dim objTipo As New clsTipoProducto()
+    Dim objTipo As New WSv1
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Session("Usuario") Is Nothing Then
             Response.Redirect("jdInicioSesion.aspx")
             Exit Sub
         End If
+        Seguridad.ExigirAdministrador(Me)
 
         If Not Page.IsPostBack Then
             listar()
@@ -20,7 +21,7 @@ Partial Class jdGestionarTipoProducto
     '====================== MÉTODOS DE APOYO ======================
     Private Sub listar()
         Try
-            dgvTipos.DataSource = objTipo.listarTipoProducto()
+            dgvTipos.DataSource = objTipo.listarTipoProductoCatalogo()
             dgvTipos.DataBind()
         Catch ex As Exception
             MostrarError("Error al listar tipos de producto: " & ex.Message)
@@ -54,7 +55,8 @@ Partial Class jdGestionarTipoProducto
         Select Case e.CommandName
             Case "Editar"
                 Try
-                    Dim fila As DataRow = objTipo.buscarXid(id)
+                    Dim dtTipo As DataTable = objTipo.buscarXidTipoProducto(id)
+                    Dim fila As DataRow = If(dtTipo IsNot Nothing AndAlso dtTipo.Rows.Count > 0, dtTipo.Rows(0), Nothing)
                     If fila IsNot Nothing Then
                         hdnModo.Value = "editar"
                         txtIdTipoProducto.Text = id.ToString()

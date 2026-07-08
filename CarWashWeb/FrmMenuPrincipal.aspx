@@ -124,10 +124,40 @@
             color: white;
         }
 
+        .btnEspacio {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
         .badge-pendiente { background-color: #D97706; }
         .badge-completado { background-color: #059669; }
         .badge-cancelado { background-color: #DC2626; }
         .badge-otro { background-color: #6B7280; }
+
+        .btn-base { 
+            border: none; 
+            padding: 12px 24px; /* Aumentamos ligeramente el padding horizontal para que respire */
+            color: white; 
+            font-weight: bold; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 9.5pt; 
+            font-family: 'Segoe UI', sans-serif; 
+            transition: background-color 0.2s;
+        }
+
+        .btn-cerrar {
+            width: auto;         /* Evita que ocupe el 100% */
+            min-width: 200px;    /* Le da un tamaño mínimo elegante */
+            display: inline-block;
+        }
+
+        .btn-cerrar:hover {
+            background-color: #047857 !important; /* Efecto hover para mejorar la UX */
+        }
+
     </style>
 </asp:Content>
 
@@ -195,6 +225,10 @@
             </EmptyDataTemplate>
         </asp:GridView>
 
+    </div>
+
+    <div style="display: flex; justify-content: center; margin-top: 25px; width: 100%;">
+        <asp:Button ID="btnCerrarCitas" runat="server" Text="CERRAR CITAS POR HOY" CssClass="btn-base btn-cerrar" BackColor="#05965a" />
     </div>
 
 </asp:Content>

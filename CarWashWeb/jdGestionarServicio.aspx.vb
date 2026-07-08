@@ -1,16 +1,18 @@
 ﻿Imports System.Data
-Imports ServiceReference1
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarServicio
     Inherits System.Web.UI.Page
 
-    Dim objServicio As New WebServiceSoapClient()
-    Dim objTipoVehiculo As New WebServiceSoapClient()
+    Dim objServicio As New WSv1
+    Dim objTipoVehiculo As New WSv1
 
     '================================================================
     ' AL CARGAR EL FORMULARIO
     '================================================================
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        Seguridad.ExigirAdministrador(Me)
+
         If Not Page.IsPostBack Then
             Try
                 CargarTablaServicios()

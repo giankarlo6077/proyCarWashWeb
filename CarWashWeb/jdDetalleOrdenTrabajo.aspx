@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Detalle Orden de Trabajo" Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="jdDetalleOrdenTrabajo.aspx.vb" Inherits="jdDetalleOrdenTrabajo" EnableEventValidation="false" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-<style>
+    <style>
     .titulo-modulo { background-color: #111827; color: white; text-align: center; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-size: 16pt; font-family: sans-serif; }
     .panel-box { border: 1px solid #D1D5DB; padding: 20px; background: white; border-radius: 6px; margin-bottom: 16px; }
     .panel-box h3 { margin-top: 0; border-left: 4px solid #1F2937; padding-left: 10px; font-family: 'Segoe UI', sans-serif; }
@@ -70,7 +70,7 @@
                     <asp:ListItem Text="Pendiente"   Value="Pendiente"   />
                     <asp:ListItem Text="En Proceso"  Value="En Proceso"  />
                     <asp:ListItem Text="Realizado"   Value="Realizado"   />
-                    <asp:ListItem Text="Cancelada"   Value="Cancelada"   />
+                    <asp:ListItem Text="Cancelado"   Value="Cancelada"   />
                 </asp:DropDownList>
             </div>
             <div class="campo-form">

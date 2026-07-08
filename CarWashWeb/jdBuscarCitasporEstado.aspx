@@ -87,7 +87,7 @@
                     <asp:ListItem>Pendiente</asp:ListItem>
                     <asp:ListItem>En Proceso</asp:ListItem>
                     <asp:ListItem>Realizado</asp:ListItem>
-                    <asp:ListItem>Cancelada</asp:ListItem>
+                    <asp:ListItem>Cancelado</asp:ListItem>
                 </asp:DropDownList>
                 <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="btn-buscar" CausesValidation="false" />
                 <asp:Button ID="btnNuevaCita" runat="server" Text="Nueva Cita" CssClass="btn-nuevaCita" CausesValidation="false" />

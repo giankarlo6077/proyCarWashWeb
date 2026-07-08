@@ -1,4 +1,4 @@
-﻿Imports capaNegocio
+﻿Imports com.somee.wspruebacarwash2
 
 Partial Class jdRecuperarContrasena
     Inherits System.Web.UI.Page
@@ -39,7 +39,7 @@ Partial Class jdRecuperarContrasena
         End If
 
         Try
-            Dim objTrabajador As New clsTrabajador()
+            Dim objTrabajador As New WSv1
             Dim pregunta As String = objTrabajador.PreguntaRecuperarContra(usuario)
 
             If pregunta = "" Then
@@ -87,7 +87,7 @@ Partial Class jdRecuperarContrasena
         End If
 
         Try
-            Dim objTrabajador As New clsTrabajador()
+            Dim objTrabajador As New WSv1
             Dim respuestaCorrecta As String = objTrabajador.RespuestaRecuperarContra(usuario)
 
             If txtRespuesta.Text.Trim().ToUpper() <> respuestaCorrecta.Trim().ToUpper() Then
@@ -149,7 +149,7 @@ Partial Class jdRecuperarContrasena
         End If
 
         Try
-            Dim objTrabajador As New clsTrabajador()
+            Dim objTrabajador As New WSv1
             objTrabajador.NuevaContrasena(nuevaPass, usuario)
 
             MostrarExito("Tu contraseña se actualizó correctamente. Ya puedes iniciar sesión.")

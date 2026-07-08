@@ -1,11 +1,11 @@
 Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarTrabajador
     Inherits System.Web.UI.Page
 
-    Dim objTrabajador As New clsTrabajador()
-    Dim objTipoTrabajador As New clsTipoTrabajador()
+    Dim objTrabajador As New WSv1
+    Dim objTipoTrabajador As New WSv1
 
     ' Propiedad para guardar el ID en el contexto de la solicitud Web (ViewState)
     Public Property idTrabajador As Integer
@@ -89,7 +89,8 @@ Partial Class jdGestionarTrabajador
     '========================================
     Sub cargarTrabajador()
         Try
-            Dim fila As DataRow = objTrabajador.obtenerTrabajadorXid(Me.idTrabajador)
+            Dim dtTrabajador As DataTable = objTrabajador.obtenerTrabajadorXid(Me.idTrabajador)
+            Dim fila As DataRow = If(dtTrabajador IsNot Nothing AndAlso dtTrabajador.Rows.Count > 0, dtTrabajador.Rows(0), Nothing)
 
             If fila IsNot Nothing Then
                 txtCodigo.Text = fila("idTrabajador").ToString()
@@ -172,7 +173,7 @@ Partial Class jdGestionarTrabajador
         End If
 
         Try
-            If objTrabajador.existeDNI(txtDni.Text.Trim(), Me.idTrabajador) Then
+            If objTrabajador.existeDNIExcluyendo(txtDni.Text.Trim(), Me.idTrabajador) Then
                 MostrarError("El número de DNI ingresado ya se encuentra registrado en el sistema.")
                 Return False
             End If

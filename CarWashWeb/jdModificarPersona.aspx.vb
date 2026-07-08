@@ -1,5 +1,5 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Public Class jdModificarPersona
         Inherits System.Web.UI.Page
@@ -43,7 +43,7 @@ Partial Public Class jdModificarPersona
         '  CARGA DE UBIGEO EN CASCADA
         ' ══════════════════════════════════════════════
         Private Sub CargarDepartamentos()
-            Dim objCliente As New clsCliente()
+            Dim objCliente As New WSv1
             Try
                 Dim dt As DataTable = objCliente.listarDepartamentos()
                 cboDepartamento.DataSource = dt
@@ -78,7 +78,7 @@ Partial Public Class jdModificarPersona
                 Return
             End If
 
-            Dim objCliente As New clsCliente()
+            Dim objCliente As New WSv1
             Try
                 Dim idDepto As Integer = Convert.ToInt32(cboDepartamento.SelectedValue)
                 Dim dt As DataTable = objCliente.listarProvincias(idDepto)
@@ -102,7 +102,7 @@ Partial Public Class jdModificarPersona
 
             If cboProvincia.SelectedValue = "0" Then Return
 
-            Dim objCliente As New clsCliente()
+            Dim objCliente As New WSv1
             Try
                 Dim idProv As Integer = Convert.ToInt32(cboProvincia.SelectedValue)
                 Dim dt As DataTable = objCliente.listarDistritos(idProv)
@@ -133,7 +133,7 @@ Partial Public Class jdModificarPersona
         '  CARGAR GRIDVIEW
         ' ══════════════════════════════════════════════
         Private Sub CargarGridView()
-            Dim objPersona As New clsPersona()
+            Dim objPersona As New WSv1
             Try
                 Dim dt As DataTable = objPersona.listarPersonaMo()
                 gvPersonas.DataSource = dt
@@ -247,7 +247,7 @@ Partial Public Class jdModificarPersona
 
             ' — Guardar —
             Dim sexo As String = If(chkMasculino.Checked, "M", "F")
-            Dim objPersona As New clsPersona()
+            Dim objPersona As New WSv1
             Try
                 objPersona.modificarPersona(
                     Convert.ToInt32(txtIdCliente.Text),
@@ -279,7 +279,7 @@ Partial Public Class jdModificarPersona
                 Return
             End If
 
-            Dim objPersona As New clsPersona()
+            Dim objPersona As New WSv1
             Try
                 objPersona.eliminarPersona(Convert.ToInt32(txtIdCliente.Text))
                 MostrarMensaje("✔ Persona eliminada correctamente.", CSS_SUCCESS)

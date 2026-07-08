@@ -1,10 +1,10 @@
 Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdMantenimientoTrabajador
     Inherits System.Web.UI.Page
 
-    Dim objTrabajador As New clsTrabajador()
+    Dim objTrabajador As New WSv1
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         ' Protegemos la página
@@ -12,6 +12,7 @@ Partial Class jdMantenimientoTrabajador
             Response.Redirect("jdInicioSesion.aspx")
             Exit Sub
         End If
+        Seguridad.ExigirAdministrador(Me)
 
         If Not Page.IsPostBack Then
             listar()
@@ -26,7 +27,8 @@ Partial Class jdMantenimientoTrabajador
     Sub listar()
         Try
             lblMensaje.Text = ""
-            Dim dt As DataTable = objTrabajador.ListarUsuariosGrid(txtBuscar.Text.Trim())
+            Dim filtro As String = txtBuscar.Text.Trim()
+            Dim dt As DataTable = If(filtro = "", objTrabajador.ListarUsuariosGrid(), objTrabajador.BuscarUsuariosGrid(filtro))
             dgvTrabajador.DataSource = dt
             dgvTrabajador.DataBind()
         Catch ex As Exception

@@ -186,9 +186,6 @@
         .btn-editar { background-color: #2563EB; }
         .btn-editar:hover { background-color: #1D4ED8; }
 
-        .btn-baja { background-color: #DC2626; }
-        .btn-baja:hover { background-color: #B91C1C; }
-
         /* ===== MODAL (frmEditarProveedor) ===== */
         .modal-overlay {
             position: fixed;
@@ -339,9 +336,6 @@
                     <ItemTemplate>
                         <asp:Button ID="btnEditar" runat="server" Text="✏️" ToolTip="Editar" CssClass="btn-icono btn-editar"
                             CommandName="Editar" CommandArgument='<%# Eval("idProveedor") %>' CausesValidation="false" />
-                        <asp:Button ID="btnBaja" runat="server" Text="🚫" ToolTip="Dar de baja" CssClass="btn-icono btn-baja"
-                            CommandName="Baja" CommandArgument='<%# Eval("idProveedor") %>' CausesValidation="false"
-                            OnClientClick="return confirm('¿Está seguro de dar de baja a este proveedor?');" />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>

@@ -1,10 +1,10 @@
 ﻿Imports System.Data
-Imports ServiceReference1
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdBuscarCitasporEstado
     Inherits System.Web.UI.Page
 
-    Dim objCita As New WebServiceSoapClient
+    Dim objCita As New WSv1
 
     Private Sub listar(ByVal dato As String)
         Try

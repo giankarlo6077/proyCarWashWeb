@@ -1,16 +1,17 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdPapeleraProducto
     Inherits System.Web.UI.Page
 
-    Dim objProducto As New clsProducto()
+    Dim objProducto As New WSv1
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Session("Usuario") Is Nothing Then
             Response.Redirect("jdInicioSesion.aspx")
             Exit Sub
         End If
+        Seguridad.ExigirAdministrador(Me)
 
         If Not Page.IsPostBack Then
             listar()

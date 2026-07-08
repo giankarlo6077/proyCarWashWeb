@@ -194,6 +194,7 @@
                     </div>
                 </div>
 
+                <asp:PlaceHolder ID="phMantenimiento" runat="server">
                 <div class="dropdown">
                     <span class="dropbtn">Mantenimiento ▾</span>
                     <div class="dropdown-content">
@@ -209,6 +210,7 @@
                         <a href="jdGestionarServicio.aspx">Servicios</a>
                     </div>
                 </div>
+                </asp:PlaceHolder>
 
                 <div class="dropdown">
                     <span class="dropbtn">Citas/Ventas ▾</span>

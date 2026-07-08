@@ -1,10 +1,10 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarProovedor
     Inherits System.Web.UI.Page
 
-    Dim objProveedor As New clsProveedor()
+    Dim objProveedor As New WSv1
 
     '================================================================
     ' CARGA
@@ -189,11 +189,12 @@ Partial Class jdGestionarProovedor
 
         Try
             Dim id As Integer = Convert.ToInt32(e.CommandArgument)
-            Dim fila As DataRow = objProveedor.buscarXid(id)
-            If fila Is Nothing Then
+            Dim dt As DataTable = objProveedor.buscarXidProveedor(id)
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
                 MostrarMensaje("No se encontró el proveedor.", False)
                 Exit Sub
             End If
+            Dim fila As DataRow = dt.Rows(0)
 
             hdnId.Value = id.ToString()
             txtNombre.Text = fila("proveedor").ToString()

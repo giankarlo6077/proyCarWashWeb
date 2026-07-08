@@ -1,10 +1,10 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdReporteVehiculo
     Inherits System.Web.UI.Page
 
-    Dim objReporte As New clsReporteVehiculo()
+    Dim objReporte As New WSv1
 
     ' 1. EVENTO LOAD: Se ejecuta apenas abres la ventana
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
@@ -31,8 +31,8 @@ Partial Class jdReporteVehiculo
     ' 4. MÉTODO AUXILIAR: Centraliza la lógica de llenado de la tabla
     Private Sub CargarDatos(placa As String)
         Try
-            ' Obtenemos los datos con la consulta súper poderosa de capaNegocio
-            Dim dtHistorial As DataTable = objReporte.ListarHistorial(placa)
+            ' Obtenemos los datos desde el Web Service (0 args = todos, 1 arg = filtrado por placa)
+            Dim dtHistorial As DataTable = If(placa = "", objReporte.ListarHistorial(), objReporte.ListarHistorialPorPlaca(placa))
 
             ' Verificamos que el DataTable no sea nulo y tenga filas
             If dtHistorial IsNot Nothing AndAlso dtHistorial.Rows.Count > 0 Then

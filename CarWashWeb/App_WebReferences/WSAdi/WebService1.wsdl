@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://tempuri.org/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="cancelarCitaVencida">
+        <s:complexType />
+      </s:element>
+      <s:element name="cancelarCitaVencidaResponse">
+        <s:complexType />
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="cancelarCitaVencidaSoapIn">
+    <wsdl:part name="parameters" element="tns:cancelarCitaVencida" />
+  </wsdl:message>
+  <wsdl:message name="cancelarCitaVencidaSoapOut">
+    <wsdl:part name="parameters" element="tns:cancelarCitaVencidaResponse" />
+  </wsdl:message>
+  <wsdl:message name="cancelarCitaVencidaHttpGetIn" />
+  <wsdl:message name="cancelarCitaVencidaHttpGetOut" />
+  <wsdl:message name="cancelarCitaVencidaHttpPostIn" />
+  <wsdl:message name="cancelarCitaVencidaHttpPostOut" />
+  <wsdl:portType name="WebService1Soap">
+    <wsdl:operation name="cancelarCitaVencida">
+      <wsdl:input message="tns:cancelarCitaVencidaSoapIn" />
+      <wsdl:output message="tns:cancelarCitaVencidaSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="WebService1HttpGet">
+    <wsdl:operation name="cancelarCitaVencida">
+      <wsdl:input message="tns:cancelarCitaVencidaHttpGetIn" />
+      <wsdl:output message="tns:cancelarCitaVencidaHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="WebService1HttpPost">
+    <wsdl:operation name="cancelarCitaVencida">
+      <wsdl:input message="tns:cancelarCitaVencidaHttpPostIn" />
+      <wsdl:output message="tns:cancelarCitaVencidaHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebService1Soap" type="tns:WebService1Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="cancelarCitaVencida">
+      <soap:operation soapAction="http://tempuri.org/cancelarCitaVencida" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebService1Soap12" type="tns:WebService1Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="cancelarCitaVencida">
+      <soap12:operation soapAction="http://tempuri.org/cancelarCitaVencida" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebService1HttpGet" type="tns:WebService1HttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="cancelarCitaVencida">
+      <http:operation location="/cancelarCitaVencida" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebService1HttpPost" type="tns:WebService1HttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="cancelarCitaVencida">
+      <http:operation location="/cancelarCitaVencida" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebService1">
+    <wsdl:port name="WebService1Soap" binding="tns:WebService1Soap">
+      <soap:address location="http://wscarwashservicioadicional.somee.com/WebService1.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebService1Soap12" binding="tns:WebService1Soap12">
+      <soap12:address location="http://wscarwashservicioadicional.somee.com/WebService1.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebService1HttpGet" binding="tns:WebService1HttpGet">
+      <http:address location="http://wscarwashservicioadicional.somee.com/WebService1.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebService1HttpPost" binding="tns:WebService1HttpPost">
+      <http:address location="http://wscarwashservicioadicional.somee.com/WebService1.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

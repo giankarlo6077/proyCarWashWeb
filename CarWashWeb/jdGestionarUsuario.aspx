@@ -222,12 +222,21 @@
 
             <div class="campo-form">
                 <label>Pregunta de Seguridad:</label>
-                <asp:TextBox ID="txtPregunta" runat="server" CssClass="form-control" placeholder="Ej: ¿Ciudad de nacimiento?" ReadOnly="true"></asp:TextBox>
+                <asp:DropDownList ID="ddlPregunta" runat="server" CssClass="form-control">
+                    <asp:ListItem Text="-- Seleccione una pregunta --" Value="" />
+                    <asp:ListItem Text="¿Cuál es el nombre de tu primera mascota?" Value="¿Cuál es el nombre de tu primera mascota?" />
+                    <asp:ListItem Text="¿Cuál es el nombre de tu madre?" Value="¿Cuál es el nombre de tu madre?" />
+                    <asp:ListItem Text="¿Cuál fue el nombre de tu escuela primaria?" Value="¿Cuál fue el nombre de tu escuela primaria?" />
+                    <asp:ListItem Text="¿Cuál es tu comida favorita?" Value="¿Cuál es tu comida favorita?" />
+                    <asp:ListItem Text="¿En qué ciudad naciste?" Value="¿En qué ciudad naciste?" />
+                    <asp:ListItem Text="¿Cuál es el segundo nombre de tu padre?" Value="¿Cuál es el segundo nombre de tu padre?" />
+                    <asp:ListItem Text="¿Cuál fue tu primer carro?" Value="¿Cuál fue tu primer carro?" />
+                </asp:DropDownList>
             </div>
 
             <div class="campo-form">
                 <label>Respuesta:</label>
-                <asp:TextBox ID="txtRespuesta" runat="server" CssClass="form-control"></asp:TextBox>
+                <asp:TextBox ID="txtRespuesta" runat="server" CssClass="form-control" placeholder="Respuesta a la pregunta seleccionada"></asp:TextBox>
             </div>
 
             <div class="campo-checkbox">

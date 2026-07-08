@@ -1,16 +1,17 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Partial Class jdGestionarMarca
     Inherits System.Web.UI.Page
 
-    Dim objMarca As New clsMarca()
+    Dim objMarca As New WSv1
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Session("Usuario") Is Nothing Then
             Response.Redirect("jdInicioSesion.aspx")
             Exit Sub
         End If
+        Seguridad.ExigirAdministrador(Me)
 
         If Not Page.IsPostBack Then
             lista()
@@ -54,7 +55,8 @@ Partial Class jdGestionarMarca
         Select Case e.CommandName
             Case "Editar"
                 Try
-                    Dim fila As DataRow = objMarca.buscarXid(id)
+                    Dim dtMarca As DataTable = objMarca.buscarXidMarca(id)
+                    Dim fila As DataRow = If(dtMarca IsNot Nothing AndAlso dtMarca.Rows.Count > 0, dtMarca.Rows(0), Nothing)
                     If fila IsNot Nothing Then
                         hdnModo.Value = "editar"
                         txtIdMarca.Text = id.ToString()

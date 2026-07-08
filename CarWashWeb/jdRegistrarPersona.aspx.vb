@@ -1,5 +1,5 @@
 ﻿Imports System.Data
-Imports capaNegocio
+Imports com.somee.wspruebacarwash2
 
 Public Class jdRegistrarPersona
     Inherits System.Web.UI.Page
@@ -18,7 +18,7 @@ Public Class jdRegistrarPersona
     ' UBIGEO EN CASCADA
     ' =============================================
     Private Sub cargarDepartamentos()
-        Dim objCliente As New clsCliente()
+        Dim objCliente As New WSv1
         Try
             Dim dt As DataTable = objCliente.listarDepartamentos()
             cboDepartamento.DataSource = dt
@@ -37,7 +37,7 @@ Public Class jdRegistrarPersona
 
         If cboDepartamento.SelectedValue = "" Then Exit Sub
 
-        Dim objCliente As New clsCliente()
+        Dim objCliente As New WSv1
         Try
             Dim idDepto As Integer = Convert.ToInt32(cboDepartamento.SelectedValue)
             Dim dt As DataTable = objCliente.listarProvincias(idDepto)
@@ -56,7 +56,7 @@ Public Class jdRegistrarPersona
 
         If cboProvincia.SelectedValue = "" Then Exit Sub
 
-        Dim objCliente As New clsCliente()
+        Dim objCliente As New WSv1
         Try
             Dim idProv As Integer = Convert.ToInt32(cboProvincia.SelectedValue)
             Dim dt As DataTable = objCliente.listarDistritos(idProv)
@@ -74,7 +74,7 @@ Public Class jdRegistrarPersona
     ' LISTADO DE PERSONAS (vista de referencia)
     ' =============================================
     Private Sub cargarListView()
-        Dim objPersona As New clsPersona()
+        Dim objPersona As New WSv1
         Try
             Dim dt As DataTable = objPersona.listarPersona()
             gvPersonas.DataSource = dt
@@ -107,7 +107,7 @@ Public Class jdRegistrarPersona
     ' GENERAR ID DE PREVISUALIZACIÓN
     ' =============================================
     Private Sub cargarIdCliente()
-        Dim objPersona As New clsPersona()
+        Dim objPersona As New WSv1
         Try
             txtId.Text = objPersona.generarIdPersona().ToString()
         Catch ex As Exception
@@ -167,7 +167,17 @@ Public Class jdRegistrarPersona
 
         Dim sexo As String = If(rbMasculino.Checked, "M", "F")
 
-        Dim objPersona As New clsPersona()
+        Dim objPersona As New WSv1
+        Try
+            If objPersona.existeNumDocumento(txtDNI.Text.Trim()) Then
+                mostrarMensaje("Ya existe un cliente registrado con ese DNI.", "alert-warning")
+                Exit Sub
+            End If
+        Catch ex As Exception
+            mostrarMensaje("Error al verificar el DNI: " & ex.Message, "alert-danger")
+            Exit Sub
+        End Try
+
         Try
             Dim idCli As Integer = Convert.ToInt32(txtId.Text)
             Dim idPer As Integer = Convert.ToInt32(txtId.Text)
@@ -201,6 +211,10 @@ Public Class jdRegistrarPersona
     Protected Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         limpiarCampos()
         ocultarMensaje()
+    End Sub
+
+    Protected Sub btnVolver_Click(sender As Object, e As EventArgs) Handles btnVolver.Click
+        Response.Redirect("~/jdGestionarClientes.aspx", False)
     End Sub
 
     Private Sub limpiarCampos()

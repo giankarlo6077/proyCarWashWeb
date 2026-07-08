@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="0d1ceb0d-2012-41ba-b7e9-60cc2bffe3da" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="5b9fa222-c8dd-4f14-9879-ec93ac3069c7" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -19,11 +19,11 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://wscarwash.somee.com/WebService.asmx" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://wsCarWashServicioAdicional.somee.com" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="WebService.disco" MetadataType="Disco" ID="3c36792d-bca0-40ed-8e7b-ebf11a4c0654" SourceId="1" SourceUrl="http://wscarwash.somee.com/WebService.asmx?disco" />
-    <MetadataFile FileName="WebService.wsdl" MetadataType="Wsdl" ID="69bd2ef7-ca16-4b58-8758-d26acddbf080" SourceId="1" SourceUrl="http://wscarwash.somee.com/WebService.asmx?wsdl" />
+    <MetadataFile FileName="WebService1.wsdl" MetadataType="Wsdl" ID="a4b55db7-c4dd-4cd2-bc63-b242a2d721d4" SourceId="1" SourceUrl="http://wscarwashservicioadicional.somee.com/WebService1.asmx?wsdl" />
+    <MetadataFile FileName="WebService1.disco" MetadataType="Disco" ID="46f30619-9a7a-4250-8797-f93495ab5be8" SourceId="1" SourceUrl="http://wscarwashservicioadicional.somee.com/WebService1.asmx?disco" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

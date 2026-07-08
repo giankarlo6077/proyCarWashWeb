@@ -1,5 +1,6 @@
 ﻿Imports System.Globalization
-Imports ServiceReference1
+Imports System.Runtime.CompilerServices
+Imports com.somee.wspruebacarwash2
 
 Partial Class FrmMenuPrincipal
     Inherits System.Web.UI.Page
@@ -13,6 +14,17 @@ Partial Class FrmMenuPrincipal
         End If
 
         If Not Page.IsPostBack Then
+            ' Se refresca el nombre desde la BD por si fue modificado en Mantenimiento de Trabajadores
+            Try
+                Dim objTrabajadorNombre As New WSv1
+                Dim nombreActual As String = objTrabajadorNombre.obtenerNombrePorUsuario(Convert.ToString(Session("Usuario")))
+                If nombreActual <> "" Then
+                    Session("NombreTrabajador") = nombreActual
+                End If
+            Catch ex As Exception
+                ' Si falla el refresco, se sigue mostrando el último nombre conocido en sesión
+            End Try
+
             lblNombreTrabajador.Text = Convert.ToString(Session("NombreTrabajador"))
 
             ' Fecha actual en español
@@ -27,7 +39,7 @@ Partial Class FrmMenuPrincipal
 
     Private Sub CargarResumen()
         Try
-            Dim objDashboard As New WebServiceSoapClient()
+            Dim objDashboard As New WSv1
 
             lblTotalVentasHoy.Text = objDashboard.totalVentasHoy().ToString("N2")
             lblCantidadVentasHoy.Text = objDashboard.cantidadVentasHoy().ToString()
@@ -64,4 +76,17 @@ Partial Class FrmMenuPrincipal
         Return "<span class='badge-estado " & claseCss & "'>" & estado & "</span>"
     End Function
 
+
+    Protected Sub btnCerrarCitas_Click(sender As Object, e As EventArgs) Handles btnCerrarCitas.Click
+        Try
+
+            Dim objCerrarCita As New WSAdi.WebService1SoapClient("WebService1Soap")
+
+            objCerrarCita.cancelarCitaVencida()
+
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('¡Las citas vencidas han sido cerradas correctamente!');", True)
+        Catch ex As Exception
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "alert", "alert('Error al conectar con el Web Service: " & ex.Message.Replace("'", "\'") & "');", True)
+        End Try
+    End Sub
 End Class
